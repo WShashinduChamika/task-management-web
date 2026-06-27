@@ -5,6 +5,11 @@ export interface RegisterDto {
   password: string;
 }
 
+export interface LoginDto {
+  email: string;
+  password: string;
+}
+
 export interface AuthUser {
   id: string;
   firstName: string;
@@ -20,4 +25,3 @@ export interface AuthApiResponse {
   accessToken: string;
   expiresIn: number;
 }
-

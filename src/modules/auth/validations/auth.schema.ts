@@ -32,6 +32,17 @@ export const RegisterSchema = z.object({
   message: "Passwords do not match",
   path: ["confirmPassword"],
 });
-
-
 export type RegisterFormValues = z.infer<typeof RegisterSchema>;
+
+export const LoginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .regex(EMAIL_REGEX, "Email must be a valid address")
+    .toLowerCase(),
+  password: z
+    .string()
+    .min(1, "Password is required"),
+});
+
+export type LoginFormValues = z.infer<typeof LoginSchema>;
