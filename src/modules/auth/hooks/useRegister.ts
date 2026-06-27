@@ -29,12 +29,10 @@ export const useRegister = () => {
         });
 
         if (ok) {
-         
           toast.success(`Account created! Welcome, ${values.firstName ?? ""}!`, {
             description: "Your account has been set up successfully.",
             duration: 3000,
           });
-
         } else {
           toast.error("Registration failed", {
             description:
