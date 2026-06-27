@@ -18,7 +18,7 @@ export const CheckHealthView = () => {
 
    return (
     <>
-      <div className="w-full flex items-center justify-center">
+      <div className="w-full flex items-center justify-center bg-accent">
         <p className="text-2xl font-bold">Check Health View</p>
       </div>
       {
