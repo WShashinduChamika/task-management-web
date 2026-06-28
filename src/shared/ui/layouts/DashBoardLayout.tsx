@@ -1,4 +1,5 @@
 import { useSignals } from "@preact/signals-react/runtime";
+import { Outlet } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +27,9 @@ export const DashboardLayout = () => {
       </Sidebar>
       <SidebarInset>
         <AppHeader />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

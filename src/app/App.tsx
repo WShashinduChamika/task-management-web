@@ -4,8 +4,7 @@ import { LoginView } from "../modules/auth/views/login_view/LoginView";
 import { CheckHealthView } from "../modules/health";
 import "./App.css";
 import { DashboardLayout } from "../shared/ui/layouts/DashBoardLayout";
-import { TasksView } from "../modules/task/views/task_view/TasksView";
-import { ProfileView } from "../modules/task/views/profile_view/ProfileView";
+import { TaskListView } from "@/modules/task/views";
 
 function App() {
   return (
@@ -16,8 +15,7 @@ function App() {
 
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<Navigate to="/tasks" replace />} />
-        <Route path="tasks" element={<TasksView />} />
-        <Route path="profile" element={<ProfileView />} />
+        <Route path="tasks" element={<TaskListView />} />
       </Route>
     </Routes>
   );
