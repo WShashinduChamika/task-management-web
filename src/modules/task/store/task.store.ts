@@ -9,6 +9,7 @@ export const taskSearchStore = signal("");
 
 export const taskCreateFormPanelOpenStore = signal(false);
 export const taskCreateFormLoadingStore = signal(false);
+export const taskCreateErrorStore = signal<string | null>(null);
 
 export const filteredTasks = computed(() => {
   const tasks = tasksDataStore.value;

@@ -1,9 +1,16 @@
-import type { TaskFilter, TaskPriority, TaskStatus } from "../types";
-import type { TaskFormValues } from "../validations/task.schema";
+import type {
+  CreateTaskDto,
+  TaskFilter,
+  TaskPriority,
+  TaskStatus,
+} from "../types";
+import { createTaskApi } from "../api/task.api";
+import { getApiErrorMessage } from "../../../utils/get-api-error-message";
 import {
   taskFilterStore,
   taskCreateFormLoadingStore,
   taskCreateFormPanelOpenStore,
+  taskCreateErrorStore,
   tasksDataStore,
   taskSearchStore,
 } from "./task.store";
@@ -25,15 +32,26 @@ export const closeTaskCreateFormPanelAction = (): void => {
 };
 
 export const createTaskAction = async (
-  values: TaskFormValues,
+  dto: CreateTaskDto,
 ): Promise<boolean> => {
   taskCreateFormLoadingStore.value = true;
+  taskCreateErrorStore.value = null;
 
   try {
-    console.log("Create task payload:", values);
+    const { data: response } = await createTaskApi(dto);
+    const task = response.data;
+
+    const currentTasks = tasksDataStore.value || [];
+    tasksDataStore.value = [...currentTasks, task];
+
     closeTaskCreateFormPanelAction();
+
     return true;
-  } catch {
+  } catch (error: any) {
+    taskCreateErrorStore.value = getApiErrorMessage(
+      error,
+      "Unable to create task",
+    );
     return false;
   } finally {
     taskCreateFormLoadingStore.value = false;

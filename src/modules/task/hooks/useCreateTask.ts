@@ -8,12 +8,15 @@ import {
 import {
   taskCreateFormPanelOpenStore,
   taskCreateFormLoadingStore,
+  taskCreateErrorStore,
 } from "../store/task.store";
 import {
   openTaskCreateFormPanelAction,
   closeTaskCreateFormPanelAction,
   createTaskAction,
 } from "../store/task.actions";
+import { toast } from "sonner";
+import { toIsoString } from "@/utils/date-format";
 
 export const useCreateTask = () => {
   useSignals();
@@ -40,7 +43,28 @@ export const useCreateTask = () => {
   };
 
   const onSubmit = form.handleSubmit(async (values) => {
-    await createTaskAction(values);
+    const ok = await createTaskAction({
+      title: values.title,
+      description: values.description,
+      priority: values.priority,
+      status: values.status,
+      dueDate: toIsoString(values.dueDate),
+    });
+
+    if (ok) {
+      toast.success("Task created!", {
+        description: `"${values.title}" has been added successfully.`,
+        duration: 3000,
+      });
+      form.reset();
+    } else {
+      toast.error("Failed to create task", {
+        description:
+          taskCreateErrorStore.value ??
+          "Something went wrong. Please try again.",
+        duration: 5000,
+      });
+    }
   });
 
   return {

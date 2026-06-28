@@ -27,10 +27,14 @@ export interface TaskFilter {
   status?: TaskStatus | "";
 }
 
-export interface TaskFormValues {
+export interface CreateTaskDto {
   title: string;
   description?: string;
   priority: TaskPriority;
   status: TaskStatus;
   dueDate: string;
+}
+
+export interface CreateTaskApiResponse {
+  data: Task;
 }
