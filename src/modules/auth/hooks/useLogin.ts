@@ -5,9 +5,12 @@ import { loginErrorStore, loginLoadingStore } from "../store/auth.store";
 import { loginAction } from "../store/auth.actions";
 import { toast } from "sonner";
 import { useSignals } from "@preact/signals-react/runtime";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
   useSignals();
+
+  const navigate = useNavigate();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
@@ -28,6 +31,7 @@ export const useLogin = () => {
         description: "You have been logged in successfully",
         duration: 3000,
       });
+      navigate("/dashboard/tasks");
     } else {
       toast.error("Login failed", {
         description: loginErrorStore.value,
