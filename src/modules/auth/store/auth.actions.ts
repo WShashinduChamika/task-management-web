@@ -1,9 +1,10 @@
 import { setAuthToken, setAuthUser } from "../../../core/storage/auth.storage";
 import { getApiErrorMessage } from "../../../utils/get-api-error-message";
-import { registerApi } from "../api/auth.api";
+import { loginApi, registerApi } from "../api/auth.api";
 import type { LoginDto, RegisterDto } from "../types";
 import {
   authUserStore,
+  loginErrorStore,
   loginLoadingStore,
   registerErrorStore,
   registerLoadingStore,
@@ -33,11 +34,20 @@ export const registerAction = async (dto: RegisterDto): Promise<boolean> => {
 
 export const loginAction = async (dto: LoginDto): Promise<boolean> => {
   loginLoadingStore.value = true;
-  console.log(dto);
+  loginErrorStore.value = null;
 
-  setTimeout(() => {
+  try {
+    const { data } = await loginApi(dto);
+    const responseData = (data as any).data || data;
+    setAuthToken(responseData.accessToken);
+    setAuthUser(responseData.user);
+    authUserStore.value = responseData.user;
     loginLoadingStore.value = false;
-  }, 3000);
-
-  return true;
+    return true;
+  } catch (error: any) {
+    loginErrorStore.value = getApiErrorMessage(error, "Unable to login");
+    return false;
+  } finally {
+    loginLoadingStore.value = false;
+  }
 };

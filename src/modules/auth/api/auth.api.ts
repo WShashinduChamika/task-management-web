@@ -1,5 +1,8 @@
 import { api } from "../../../core/api";
-import type { AuthApiResponse, RegisterDto } from "../types";
+import type { AuthApiResponse, LoginDto, RegisterDto } from "../types";
 
-export const registerApi = (payload: RegisterDto) => 
-    api.post<AuthApiResponse>("/auth/register", payload);
+export const registerApi = (payload: RegisterDto) =>
+  api.post<AuthApiResponse>("/auth/register", payload);
+
+export const loginApi = (payload: LoginDto) =>
+  api.post<AuthApiResponse>("/auth/login", payload);
