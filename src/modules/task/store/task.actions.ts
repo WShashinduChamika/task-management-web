@@ -1,5 +1,12 @@
 import type { TaskFilter, TaskPriority, TaskStatus } from "../types";
-import { taskFilterStore, tasksDataStore, taskSearchStore } from "./task.store";
+import type { TaskFormValues } from "../validations/task.schema";
+import {
+  taskFilterStore,
+  taskCreateFormLoadingStore,
+  taskCreateFormPanelOpenStore,
+  tasksDataStore,
+  taskSearchStore,
+} from "./task.store";
 
 export const setTaskFilterAction = (filter: TaskFilter): void => {
   taskFilterStore.value = filter;
@@ -7,6 +14,30 @@ export const setTaskFilterAction = (filter: TaskFilter): void => {
 
 export const setTaskSearchAction = (query: string): void => {
   taskSearchStore.value = query;
+};
+
+export const openTaskCreateFormPanelAction = (): void => {
+  taskCreateFormPanelOpenStore.value = true;
+};
+
+export const closeTaskCreateFormPanelAction = (): void => {
+  taskCreateFormPanelOpenStore.value = false;
+};
+
+export const createTaskAction = async (
+  values: TaskFormValues,
+): Promise<boolean> => {
+  taskCreateFormLoadingStore.value = true;
+
+  try {
+    console.log("Create task payload:", values);
+    closeTaskCreateFormPanelAction();
+    return true;
+  } catch {
+    return false;
+  } finally {
+    taskCreateFormLoadingStore.value = false;
+  }
 };
 
 export const seedDummyTasksAction = (): void => {

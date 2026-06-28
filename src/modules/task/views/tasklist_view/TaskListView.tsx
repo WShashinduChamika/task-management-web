@@ -3,13 +3,17 @@ import { Plus, ClipboardList } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
 import { TaskFilterSection } from "./sections/TaskFilterSection";
 import { TaskTableSection } from "./sections/TaskTableSection";
+import { TaskFormPanelSection } from "./sections/TaskFormPanelSection";
 import { useTasks } from "../../hooks/useTasks";
+import { useCreateTask } from "../../hooks/useCreateTask";
 import { useEffect } from "react";
 
 export const TaskListView = () => {
   useSignals();
 
   const { loadTasks } = useTasks();
+  const { form, isPanelOpen, isLoading, openPanel, closePanel, onSubmit } =
+    useCreateTask();
 
   useEffect(() => {
     loadTasks();
@@ -30,7 +34,7 @@ export const TaskListView = () => {
         <Button
           id="create-task-btn"
           size="sm"
-          onClick={() => {}}
+          onClick={openPanel}
           className="mt-2 w-full sm:mt-0 sm:w-auto"
         >
           <Plus className="mr-1.5 size-4" />
@@ -41,6 +45,15 @@ export const TaskListView = () => {
       <TaskFilterSection />
 
       <TaskTableSection />
+
+      <TaskFormPanelSection
+        open={isPanelOpen}
+        isEditing={false}
+        form={form}
+        onSubmit={onSubmit}
+        onClose={closePanel}
+        isLoading={isLoading}
+      />
     </div>
   );
 };

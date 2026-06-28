@@ -26,3 +26,11 @@ export interface TaskFilter {
   priority?: TaskPriority | "";
   status?: TaskStatus | "";
 }
+
+export interface TaskFormValues {
+  title: string;
+  description?: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  dueDate: string;
+}
