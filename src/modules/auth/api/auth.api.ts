@@ -6,3 +6,5 @@ export const registerApi = (payload: RegisterDto) =>
 
 export const loginApi = (payload: LoginDto) =>
   api.post<AuthApiResponse>("/auth/login", payload);
+
+export const logoutApi = () => api.post("/auth/logout");

@@ -11,7 +11,7 @@ import {
 import { AppHeader } from "../navigations/AppHeader";
 import { SidebarNav } from "../navigations/SideBarNav";
 import { authUserStore } from "@/modules/auth/store/auth.store";
-import { clearAuthStorage } from "@/core/storage/auth.storage";
+import { logoutAction } from "@/modules/auth/store/auth.actions";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -20,10 +20,9 @@ export const DashboardLayout = () => {
   const navigate = useNavigate();
   const user = authUserStore.value;
 
-  const handleLogout = () => {
-    clearAuthStorage();
-    authUserStore.value = null;
-    navigate("/login");
+  const handleLogout = async () => {
+    await logoutAction();
+    navigate("/");
   };
 
   const getInitials = () => {

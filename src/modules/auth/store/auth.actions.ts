@@ -1,6 +1,6 @@
-import { setAuthToken, setAuthUser } from "../../../core/storage/auth.storage";
+import { setAuthToken, setAuthUser, clearAuthStorage } from "../../../core/storage/auth.storage";
 import { getApiErrorMessage } from "../../../core/api/response";
-import { loginApi, registerApi } from "../api/auth.api";
+import { loginApi, registerApi, logoutApi } from "../api/auth.api";
 import type { LoginDto, RegisterDto } from "../types";
 import {
   authUserStore,
@@ -49,5 +49,18 @@ export const loginAction = async (dto: LoginDto): Promise<boolean> => {
     return false;
   } finally {
     loginLoadingStore.value = false;
+  }
+};
+
+export const logoutAction = async (): Promise<boolean> => {
+  try {
+    await logoutApi();
+    return true;
+  } catch (error) {
+    console.error("Logout API failed", error);
+    return false;
+  } finally {
+    clearAuthStorage();
+    authUserStore.value = null;
   }
 };

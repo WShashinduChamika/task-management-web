@@ -1,11 +1,8 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useSignals } from "@preact/signals-react/runtime";
-import { isLoggedInStore } from "@/modules/auth/store/auth.store";
+import { getAuthToken } from "@/core/storage/auth.storage";
 
 export const AuthGuard = () => {
-  useSignals();
+  const token = getAuthToken();
 
-  const isLoggedIn = isLoggedInStore.value;
-
-  return isLoggedIn ? <Outlet /> : <Navigate to="/" replace />;
+  return token ? <Outlet /> : <Navigate to="/" replace />;
 };
