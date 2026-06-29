@@ -1,6 +1,8 @@
 import type { UseFormReturn } from "react-hook-form";
 import { useEffect } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
+import { Loader2 } from "lucide-react";
+import { cn } from "../../../../../lib/utils";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
 import { Label } from "../../../../../components/ui/label";
@@ -11,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../../components/ui/select";
-import { Separator } from "../../../../../components/ui/separator";
 import { RightPanel } from "../../../../../shared/ui/overlays/RightPanel";
 import type { TaskFormValues } from "../../../validations/task.schema";
 import { isAdminUserStore } from "@/modules/auth/store/auth.store";
@@ -73,15 +74,50 @@ export const TaskFormPanelSection = ({
           : "Fill in the details below to create a new task."
       }
       onClose={onClose}
+      footer={
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <Button
+            id="task-form-cancel-btn"
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            disabled={isLoading}
+            className="w-full sm:w-1/3 h-11 rounded-xl text-stone-neutral-11 hover:text-stone-neutral-12 hover:bg-stone-neutral-3 border-stone-neutral-4 font-semibold shadow-sm"
+          >
+            Cancel
+          </Button>
+          <Button
+            id="task-form-submit-btn"
+            type="submit"
+            form="task-form"
+            disabled={isLoading}
+            className="w-full sm:w-2/3 h-11 bg-ocean-blue-9 hover:bg-ocean-blue-10 text-white rounded-xl shadow-md shadow-ocean-blue-9/25 transition-all duration-300 transform hover:-translate-y-0.5 font-semibold"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                {isEditing ? "Saving…" : "Creating…"}
+              </>
+            ) : isEditing ? (
+              "Save Changes"
+            ) : (
+              "Create Task"
+            )}
+          </Button>
+        </div>
+      }
     >
       <form
         id="task-form"
         onSubmit={onSubmit}
-        className="flex flex-col gap-5 pt-2"
+        className="flex flex-col gap-6"
         noValidate
       >
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="task-title">
+        <div className="flex flex-col gap-1">
+          <Label
+            htmlFor="task-title"
+            className="text-sm font-semibold text-primary ml-1"
+          >
             Title <span className="text-destructive">*</span>
           </Label>
           <Input
@@ -91,34 +127,43 @@ export const TaskFormPanelSection = ({
             autoComplete="off"
             aria-invalid={!!errors.title}
             {...register("title")}
+            className="h-11 border-stone-neutral-4 focus:ring-2 focus:ring-primary/20 focus:border-primary rounded-xl transition-all duration-300 bg-white/70 shadow-sm text-base text-primary"
           />
           {errors.title && (
-            <p className="text-xs text-destructive">{errors.title.message}</p>
+            <p className="text-xs text-destructive ml-1">
+              {errors.title.message}
+            </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="task-description">Description</Label>
+        <div className="flex flex-col gap-1">
+          <Label
+            htmlFor="task-description"
+            className="text-sm font-semibold text-primary ml-1"
+          >
+            Description
+          </Label>
           <textarea
             id="task-description"
-            rows={3}
+            rows={4}
             placeholder="Brief description of the task…"
             aria-invalid={!!errors.description}
-            className="w-full resize-none rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 aria-[invalid=true]:border-destructive"
+            className="w-full resize-none rounded-xl border border-stone-neutral-4 bg-white/70 px-3 py-3 text-base text-primary placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 disabled:opacity-50 aria-[invalid=true]:border-destructive transition-all duration-300 shadow-sm"
             {...register("description")}
           />
           {errors.description && (
-            <p className="text-xs text-destructive">
+            <p className="text-xs text-destructive ml-1">
               {errors.description.message}
             </p>
           )}
         </div>
 
-        <Separator />
-
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="task-priority">
+          <div className="flex flex-col gap-1">
+            <Label
+              htmlFor="task-priority"
+              className="text-sm font-semibold text-primary ml-1"
+            >
               Priority <span className="text-destructive">*</span>
             </Label>
             <Select
@@ -131,12 +176,12 @@ export const TaskFormPanelSection = ({
             >
               <SelectTrigger
                 id="task-priority"
-                className="w-full"
+                className="w-full h-11 border-stone-neutral-4 rounded-xl bg-white/70 shadow-sm focus:ring-primary/20"
                 aria-invalid={!!errors.priority}
               >
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl border-stone-neutral-4 shadow-xl">
                 {PRIORITY_OPTIONS.map((p) => (
                   <SelectItem key={p} value={p}>
                     {p}
@@ -145,14 +190,17 @@ export const TaskFormPanelSection = ({
               </SelectContent>
             </Select>
             {errors.priority && (
-              <p className="text-xs text-destructive">
+              <p className="text-xs text-destructive ml-1">
                 {errors.priority.message}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="task-status">
+          <div className="flex flex-col gap-1">
+            <Label
+              htmlFor="task-status"
+              className="text-sm font-semibold text-primary ml-1"
+            >
               Status <span className="text-destructive">*</span>
             </Label>
             <Select
@@ -165,12 +213,12 @@ export const TaskFormPanelSection = ({
             >
               <SelectTrigger
                 id="task-status"
-                className="w-full"
+                className="w-full h-11 border-stone-neutral-4 rounded-xl bg-white/70 shadow-sm focus:ring-primary/20"
                 aria-invalid={!!errors.status}
               >
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl border-stone-neutral-4 shadow-xl">
                 {STATUS_OPTIONS.map((s) => (
                   <SelectItem key={s} value={s}>
                     {s}
@@ -179,31 +227,42 @@ export const TaskFormPanelSection = ({
               </SelectContent>
             </Select>
             {errors.status && (
-              <p className="text-xs text-destructive">
+              <p className="text-xs text-destructive ml-1">
                 {errors.status.message}
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="task-due-date">
+        <div className="flex flex-col gap-1">
+          <Label className="text-sm font-semibold text-primary ml-1">
             Due Date <span className="text-destructive">*</span>
           </Label>
           <Input
             id="task-due-date"
             type="date"
-            aria-invalid={!!errors.dueDate}
             {...register("dueDate")}
+            className={cn(
+              "w-full h-11 border-stone-neutral-4 rounded-xl bg-white/70 shadow-sm focus:ring-primary/20",
+              !!errors.dueDate &&
+                "border-destructive focus-visible:ring-destructive/20",
+            )}
           />
           {errors.dueDate && (
-            <p className="text-xs text-destructive">{errors.dueDate.message}</p>
+            <p className="text-xs text-destructive ml-1">
+              {errors.dueDate.message}
+            </p>
           )}
         </div>
 
         {isAdmin && (
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="task-assigned-to">Assigned To</Label>
+          <div className="flex flex-col gap-1">
+            <Label
+              htmlFor="task-assigned-to"
+              className="text-sm font-semibold text-primary ml-1"
+            >
+              Assigned To
+            </Label>
             <Select
               value={assignedTo || ""}
               onValueChange={(val) =>
@@ -215,7 +274,7 @@ export const TaskFormPanelSection = ({
             >
               <SelectTrigger
                 id="task-assigned-to"
-                className="w-full"
+                className="w-full h-11 border-stone-neutral-4 rounded-xl bg-white/70 shadow-sm focus:ring-primary/20"
                 aria-invalid={!!errors.assignedTo}
               >
                 <SelectValue
@@ -226,7 +285,7 @@ export const TaskFormPanelSection = ({
                   }
                 />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-xl border-stone-neutral-4 shadow-xl">
                 <SelectItem value="none">Unassigned</SelectItem>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
@@ -236,35 +295,12 @@ export const TaskFormPanelSection = ({
               </SelectContent>
             </Select>
             {errors.assignedTo && (
-              <p className="text-xs text-destructive">
+              <p className="text-xs text-destructive ml-1">
                 {errors.assignedTo.message}
               </p>
             )}
           </div>
         )}
-
-        <Separator />
-
-        <div className="flex items-center justify-end gap-2 pt-1">
-          <Button
-            id="task-form-cancel-btn"
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-          <Button id="task-form-submit-btn" type="submit" disabled={isLoading}>
-            {isLoading
-              ? isEditing
-                ? "Saving…"
-                : "Creating…"
-              : isEditing
-                ? "Save Changes"
-                : "Create Task"}
-          </Button>
-        </div>
       </form>
     </RightPanel>
   );

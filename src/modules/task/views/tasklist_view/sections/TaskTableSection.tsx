@@ -64,13 +64,13 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
 
 const PriorityBadge = ({ priority }: { priority: TaskPriority }) => {
   const cfg = priorityConfig[priority];
-  return <Badge variant="outline" className={`${cfg.className} font-semibold px-2.5 py-0.5 rounded-md`}>{cfg.label}</Badge>;
+  return <Badge variant="outline" className={`${cfg.className} font-semibold px-3 py-1 rounded-md text-sm`}>{cfg.label}</Badge>;
 };
 
 const StatusBadge = ({ status }: { status: TaskStatus }) => {
   const cfg = statusConfig[status];
   return (
-    <Badge variant="outline" className={`${cfg.className} font-semibold px-2.5 py-0.5 rounded-md`}>
+    <Badge variant="outline" className={`${cfg.className} font-semibold px-3 py-1 rounded-md text-sm`}>
       {cfg.label}
     </Badge>
   );
@@ -181,16 +181,16 @@ export const TaskTableSection = ({
       <Table>
         <TableHeader className="bg-stone-neutral-2/80">
           <TableRow className="hover:bg-transparent border-b-stone-neutral-4">
-            <TableHead className="w-[280px]">Title</TableHead>
-            <TableHead className="hidden xl:table-cell">Description</TableHead>
-            <TableHead className="w-[100px]">Priority</TableHead>
-            <TableHead className="w-[130px]">Status</TableHead>
-            <TableHead className="w-[140px]">Due Date</TableHead>
-            {isAdmin && <TableHead className="w-[150px]">Created By</TableHead>}
+            <TableHead className="w-[280px] pl-4 sm:pl-6 text-base font-semibold text-stone-neutral-11">Title</TableHead>
+            <TableHead className="hidden xl:table-cell text-base font-semibold text-stone-neutral-11">Description</TableHead>
+            <TableHead className="w-[100px] text-base font-semibold text-stone-neutral-11">Priority</TableHead>
+            <TableHead className="w-[130px] text-base font-semibold text-stone-neutral-11">Status</TableHead>
+            <TableHead className="w-[140px] text-base font-semibold text-stone-neutral-11">Due Date</TableHead>
+            {isAdmin && <TableHead className="w-[150px] text-base font-semibold text-stone-neutral-11">Created By</TableHead>}
             {isAdmin && (
-              <TableHead className="w-[150px]">Assigned To</TableHead>
+              <TableHead className="w-[150px] text-base font-semibold text-stone-neutral-11">Assigned To</TableHead>
             )}
-            <TableHead className="w-[52px]" />
+            <TableHead className="w-[52px] pr-4 sm:pr-6" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -199,8 +199,8 @@ export const TaskTableSection = ({
           ) : (
             tasks?.map((task) => (
               <TableRow key={task.id} className="group hover:bg-ocean-blue-1/40 transition-colors border-b-stone-neutral-4">
-                <TableCell className="font-medium">{task.title}</TableCell>
-                <TableCell className="hidden max-w-[320px] truncate text-muted-foreground xl:table-cell">
+                <TableCell className="font-semibold text-base text-primary pl-4 sm:pl-6">{task.title}</TableCell>
+                <TableCell className="hidden max-w-[320px] truncate text-muted-foreground text-base xl:table-cell">
                   {task.description ?? "—"}
                 </TableCell>
                 <TableCell>
@@ -209,24 +209,24 @@ export const TaskTableSection = ({
                 <TableCell>
                   <StatusBadge status={task.status} />
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
+                <TableCell className="text-base text-muted-foreground">
                   {formatDueDate(task.dueDate)}
                 </TableCell>
                 {isAdmin && (
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="text-base text-muted-foreground">
                     {task.createdBy
                       ? `${task.createdBy.firstName} ${task.createdBy.lastName}`.trim()
                       : "—"}
                   </TableCell>
                 )}
                 {isAdmin && (
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="text-base text-muted-foreground">
                     {task.assignedTo
                       ? `${task.assignedTo.firstName} ${task.assignedTo.lastName}`.trim()
                       : "—"}
                   </TableCell>
                 )}
-                <TableCell>
+                <TableCell className="pr-4 sm:pr-6">
                   <RowActions
                     task={task}
                     onEdit={onEdit}
