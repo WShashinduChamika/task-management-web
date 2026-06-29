@@ -22,6 +22,8 @@ export const unwrapApiResponse = <T>(
   if (body.success) {
     return body.data;
   }
+
+  throw new ApiRequestError(body.error);
 };
 
 export const getApiErrorMessage = (err: unknown, fallback: string): string => {

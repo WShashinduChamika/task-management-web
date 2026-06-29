@@ -69,8 +69,8 @@ export const setTaskPaginationAction = (
 
 export const resetTaskFilterAction = (): void => {
   taskFilterStore.value = {
-    priority: null,
-    status: null,
+    priority: undefined,
+    status: undefined,
     createdBy: undefined,
     assignedTo: undefined,
   };
