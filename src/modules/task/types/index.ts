@@ -49,6 +49,7 @@ export interface CreateTaskDto {
   priority: TaskPriority;
   status: TaskStatus;
   dueDate: string;
+  assignedTo?: string;
 }
 
 export interface UpdateTaskDto {
@@ -57,6 +58,7 @@ export interface UpdateTaskDto {
   priority?: TaskPriority;
   status?: TaskStatus;
   dueDate?: string;
+  assignedTo?: string;
 }
 
 export interface CreateTaskApiResponse extends Task {

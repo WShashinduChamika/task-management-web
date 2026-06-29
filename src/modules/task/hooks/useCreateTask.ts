@@ -29,6 +29,7 @@ export const useCreateTask = () => {
       priority: undefined,
       status: "Open",
       dueDate: "",
+      assignedTo: "",
     },
   });
 
@@ -49,6 +50,7 @@ export const useCreateTask = () => {
       priority: values.priority,
       status: values.status,
       dueDate: toIsoString(values.dueDate),
+      assignedTo: values.assignedTo || undefined,
     });
 
     if (ok) {

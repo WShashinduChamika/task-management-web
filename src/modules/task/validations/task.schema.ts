@@ -22,6 +22,8 @@ export const TaskFormSchema = z.object({
   }),
 
   dueDate: z.string().min(1, "Due date is required"),
+
+  assignedTo: z.string().optional(),
 });
 
 export type TaskFormValues = z.infer<typeof TaskFormSchema>;

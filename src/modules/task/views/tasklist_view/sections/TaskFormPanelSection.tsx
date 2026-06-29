@@ -1,4 +1,6 @@
 import type { UseFormReturn } from "react-hook-form";
+import { useEffect } from "react";
+import { useSignals } from "@preact/signals-react/runtime";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
 import { Label } from "../../../../../components/ui/label";
@@ -12,6 +14,8 @@ import {
 import { Separator } from "../../../../../components/ui/separator";
 import { RightPanel } from "../../../../../shared/ui/overlays/RightPanel";
 import type { TaskFormValues } from "../../../validations/task.schema";
+import { isAdminUserStore } from "@/modules/auth/store/auth.store";
+import { useActiveUsers } from "@/modules/user/hooks/useActiveUsers";
 
 const PRIORITY_OPTIONS = ["Low", "Medium", "High"] as const;
 const STATUS_OPTIONS = ["Open", "In Progress", "Testing", "Done"] as const;
@@ -33,6 +37,8 @@ export const TaskFormPanelSection = ({
   onClose,
   isLoading,
 }: TaskFormPanelSectionProps) => {
+  useSignals();
+
   const {
     register,
     setValue,
@@ -42,6 +48,20 @@ export const TaskFormPanelSection = ({
 
   const priority = watch("priority");
   const status = watch("status");
+  const assignedTo = watch("assignedTo");
+  const isAdmin = isAdminUserStore.value;
+
+  const {
+    users,
+    isLoading: isUsersLoading,
+    loadActiveUsers,
+  } = useActiveUsers();
+
+  useEffect(() => {
+    if (open && isAdmin) {
+      loadActiveUsers();
+    }
+  }, [open, isAdmin, loadActiveUsers]);
 
   return (
     <RightPanel
@@ -180,6 +200,48 @@ export const TaskFormPanelSection = ({
             <p className="text-xs text-destructive">{errors.dueDate.message}</p>
           )}
         </div>
+
+        {isAdmin && (
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="task-assigned-to">Assigned To</Label>
+            <Select
+              value={assignedTo || ""}
+              onValueChange={(val) =>
+                setValue("assignedTo", val === "none" ? "" : val, {
+                  shouldValidate: true,
+                })
+              }
+              disabled={isUsersLoading}
+            >
+              <SelectTrigger
+                id="task-assigned-to"
+                className="w-full"
+                aria-invalid={!!errors.assignedTo}
+              >
+                <SelectValue
+                  placeholder={
+                    isUsersLoading
+                      ? "Loading users..."
+                      : "Select user (optional)"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Unassigned</SelectItem>
+                {users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.assignedTo && (
+              <p className="text-xs text-destructive">
+                {errors.assignedTo.message}
+              </p>
+            )}
+          </div>
+        )}
 
         <Separator />
 

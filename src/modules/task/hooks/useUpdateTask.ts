@@ -33,6 +33,7 @@ export const useUpdateTask = () => {
       priority: undefined,
       status: "Open",
       dueDate: "",
+      assignedTo: "",
     },
   });
 
@@ -44,6 +45,7 @@ export const useUpdateTask = () => {
       priority: task.priority,
       status: task.status,
       dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
+      assignedTo: task.assignedTo?.id ?? "",
     });
     openTaskUpdateFormPanelAction();
   };
@@ -64,6 +66,7 @@ export const useUpdateTask = () => {
       priority: values.priority,
       status: values.status,
       dueDate: toIsoString(values.dueDate),
+      assignedTo: values.assignedTo || undefined,
     });
 
     if (ok) {
