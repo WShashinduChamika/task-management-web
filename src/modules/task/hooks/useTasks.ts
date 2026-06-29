@@ -6,12 +6,15 @@ import {
   tasksErrorStore,
   taskFilterStore,
   taskSearchStore,
+  taskPaginationStore,
+  taskPaginationMetaStore,
 } from "../store/task.store";
 import {
   fetchTasksAction,
   //seedDummyTasksAction,
   setTaskFilterAction,
   setTaskSearchAction,
+  setTaskPaginationAction,
 } from "../store/task.actions";
 import type { TaskFilter } from "../types";
 import { toast } from "sonner";
@@ -63,6 +66,16 @@ export const useTasks = () => {
     setTaskFilterAction({});
   };
 
+  const handlePageChange = (newPage: number) => {
+    const current = taskPaginationStore.value;
+    setTaskPaginationAction({ ...current, page: newPage });
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    const current = taskPaginationStore.value;
+    setTaskPaginationAction({ ...current, limit: newLimit, page: 1 });
+  };
+
   return {
     tasks: tasksDataStore.value,
     isLoading: tasksLoadingStore.value,
@@ -70,10 +83,14 @@ export const useTasks = () => {
     filter: taskFilterStore.value,
     search: taskSearchStore.value,
     hasActiveFilters,
+    pagination: taskPaginationStore.value,
+    paginationMeta: taskPaginationMetaStore.value,
     loadTasks,
     handleSearchChange,
     handlePriorityChange,
     handleStatusChange,
     handleClearFilters,
+    handlePageChange,
+    handleLimitChange,
   };
 };

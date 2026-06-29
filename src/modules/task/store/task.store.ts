@@ -1,6 +1,6 @@
 import { signal } from "@preact/signals-react";
 import type { FetchTasksApiResponse, TaskFilter } from "../types";
-import type { PaginationOptions } from "@/core/interfaces";
+import type { PaginatedResult, PaginationOptions } from "@/core/interfaces";
 
 export const tasksDataStore = signal<FetchTasksApiResponse[]>([]);
 export const tasksLoadingStore = signal(false);
@@ -13,6 +13,8 @@ export const taskPaginationStore = signal<PaginationOptions>({
   sortBy: "createdAt",
   sortOrder: "desc",
 });
+
+export const taskPaginationMetaStore = signal<Omit<PaginatedResult<unknown>, "items"> | null>(null);
 
 export const taskCreateFormPanelOpenStore = signal(false);
 export const taskCreateFormLoadingStore = signal(false);

@@ -20,6 +20,7 @@ import {
 } from "../../../../../components/ui/dropdown-menu";
 import type { Task, TaskPriority, TaskStatus } from "../../../types";
 import { useTasks } from "@/modules/task/hooks/useTasks";
+import { TaskPaginationSection } from "./TaskPaginationSection";
 
 const priorityConfig: Record<
   TaskPriority,
@@ -187,6 +188,10 @@ export const TaskTableSection = () => {
           )}
         </TableBody>
       </Table>
+
+      <div className="border-t border-border">
+        <TaskPaginationSection />
+      </div>
     </div>
   );
 };

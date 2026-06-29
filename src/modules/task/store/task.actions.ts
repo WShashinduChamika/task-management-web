@@ -11,15 +11,17 @@ import {
   tasksLoadingStore,
   tasksErrorStore,
   taskPaginationStore,
+  taskPaginationMetaStore,
 } from "./task.store";
 import type { PaginationOptions } from "@/core/interfaces";
 
 const buildListTaskParams = (): ListTaskParams => {
+  const { page, limit, sortBy, sortOrder } = taskPaginationStore.value;
   return {
-    page: 1,
-    limit: 10,
-    sortBy: "createdAt",
-    sortOrder: "desc",
+    page,
+    limit,
+    sortBy: sortBy as ListTaskParams["sortBy"],
+    sortOrder: sortOrder as ListTaskParams["sortOrder"],
     search: taskSearchStore.value,
     priority: taskFilterStore.value.priority,
     status: taskFilterStore.value.status,
@@ -28,10 +30,12 @@ const buildListTaskParams = (): ListTaskParams => {
 
 export const setTaskFilterAction = (filter: TaskFilter): void => {
   taskFilterStore.value = filter;
+  taskPaginationStore.value = { ...taskPaginationStore.value, page: 1 };
 };
 
 export const setTaskSearchAction = (query: string): void => {
   taskSearchStore.value = query;
+  taskPaginationStore.value = { ...taskPaginationStore.value, page: 1 };
 };
 
 export const setTaskPaginationAction = (
@@ -103,11 +107,13 @@ export const fetchTasksAction = async () => {
   try {
     const data = await fetchTasksApi(params);
 
-    if (params.page === 1) {
-      tasksDataStore.value = data.items;
-    } else {
-      tasksDataStore.value = [...tasksDataStore.value, ...data.items];
-    }
+    tasksDataStore.value = data.items;
+    taskPaginationMetaStore.value = {
+      total: data.total,
+      page: data.page,
+      limit: data.limit,
+      totalPages: data.totalPages,
+    };
 
     return true;
   } catch (error: any) {

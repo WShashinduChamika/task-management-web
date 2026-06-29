@@ -11,13 +11,13 @@ import { useEffect } from "react";
 export const TaskListView = () => {
   useSignals();
 
-  const { loadTasks, filter, search } = useTasks();
+  const { loadTasks, filter, search, pagination } = useTasks();
   const { form, isPanelOpen, isLoading, openPanel, closePanel, onSubmit } =
     useCreateTask();
 
   useEffect(() => {
     loadTasks();
-  }, [filter, search]);
+  }, [filter, search, pagination]);
 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6">
