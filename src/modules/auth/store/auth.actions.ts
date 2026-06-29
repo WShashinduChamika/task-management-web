@@ -1,5 +1,5 @@
 import { setAuthToken, setAuthUser } from "../../../core/storage/auth.storage";
-import { getApiErrorMessage } from "../../../utils/get-api-error-message";
+import { getApiErrorMessage } from "../../../core/api/response";
 import { loginApi, registerApi } from "../api/auth.api";
 import type { LoginDto, RegisterDto } from "../types";
 import {
