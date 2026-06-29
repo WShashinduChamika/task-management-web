@@ -45,22 +45,23 @@ export const TaskListView = () => {
   }, [filter, search, pagination]);
 
   return (
-    <div className="flex flex-col gap-6 p-4 sm:p-6">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-4 max-w-[1600px] mx-auto w-full">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between bg-white/70 backdrop-blur-xl p-2 sm:p-3 rounded-lg border border-stone-neutral-4 shadow-sm">
         <div className="flex items-center gap-2">
-          <ClipboardList className="size-5 text-primary" />
+          <div className="p-2 bg-ocean-blue-2 rounded-lg text-ocean-blue-9 shadow-sm">
+            <ClipboardList className="size-5" />
+          </div>
           <div>
-            <h1 className="text-lg font-semibold tracking-tight">Tasks</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-xl font-bold tracking-tight text-primary leading-tight">Tasks</h1>
+            <p className="text-xs text-secondary-foreground font-medium">
               Manage and track all project tasks.
             </p>
           </div>
         </div>
         <Button
           id="create-task-btn"
-          size="sm"
           onClick={openCreate}
-          className="mt-2 w-full sm:mt-0 sm:w-auto"
+          className="mt-2 w-full sm:mt-0 sm:w-auto h-9 bg-ocean-blue-9 hover:bg-ocean-blue-10 text-white rounded-lg shadow-md shadow-ocean-blue-9/25 transition-all duration-300 transform hover:-translate-y-0.5 font-medium px-4 text-sm"
         >
           <Plus className="mr-1.5 size-4" />
           New Task
