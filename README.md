@@ -1,75 +1,71 @@
-# React + TypeScript + Vite
+# Task Management Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, fast, and feature-rich task management web application built with React, TypeScript, and Vite. This application provides a premium glassmorphic user interface to effectively manage, filter, and track tasks.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **User Authentication**: Secure login and registration with token-based authentication (including automatic token refresh).
+- **Task Management**: Create, read, update, and delete tasks with priorities (High, Medium, Low) and statuses (Open, In Progress, Testing, Done).
+- **Role-Based Access Control**: Different views and capabilities for `Admin` and `User` roles.
+- **Responsive Design**: A sleek, fully responsive dashboard that looks great on both desktop and mobile devices.
+- **Premium UI**: Utilizing modern web design patterns including glassmorphism, smooth animations, and optimized skeleton loading states.
 
-## React Compiler
+## 🛠️ Dependencies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This project leverages modern frontend technologies for a robust developer and user experience:
 
-## Expanding the ESLint configuration
+- **Core**: React 19, TypeScript, Vite 8
+- **State Management**: `@preact/signals-react` for lightweight and reactive global state
+- **Data Fetching**: `@tanstack/react-query` & `axios`
+- **Routing**: `react-router-dom` v7
+- **Styling**: Tailwind CSS v4, `clsx`, `tailwind-merge`, `tailwindcss-animate`
+- **UI Components**: `shadcn/ui` (Radix UI), `lucide-react` (icons)
+- **Forms & Validation**: `react-hook-form` with `@hookform/resolvers` and `zod`
+- **Date Formatting**: `date-fns` & `react-day-picker`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ⚙️ Setup Instructions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Node.js (version 20 or higher recommended)
+- npm (or yarn/pnpm)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
 
-```
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd task-management-web
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. **Environment Variables**
+   Create a `.env` file in the root directory based on `.env.example` (if available) and configure your API URL.
+   ```env
+   VITE_API_BASE_URL=http://localhost:3000/api
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+4. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:5173`.
 
-```
+## 📖 Usage
+
+- **Development**: Run `npm run dev` to start the local development server with hot-module replacement (HMR).
+- **Production Build**: Run `npm run build` to compile the TypeScript code and bundle the application with Vite.
+- **Preview Production Build**: Run `npm run preview` to locally serve the production bundle for testing.
+- **Linting**: Run `npm run lint` to execute ESLint and ensure code quality.
+
+## 🗂️ Project Structure
+
+- `src/app/`: Core application configuration, routing, and global providers.
+- `src/components/ui/`: Reusable, styled UI components (shadcn/ui).
+- `src/core/`: Core utilities including API clients, generic constants, and local storage handlers.
+- `src/modules/`: Feature-based modules containing isolated logic, views, API hooks, and stores (e.g., `auth`, `task`).
+- `src/shared/`: Shared layouts, navigation components, and route guards used across multiple modules.
