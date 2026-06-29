@@ -33,20 +33,25 @@ This project leverages modern frontend technologies for a robust developer and u
 ### Installation
 
 1. **Clone the repository**
+
+   > **Note:** The `main` branch is the primary, updated branch for this project. Ensure you are on `main` for the most recent changes.
+
    ```bash
    git clone <repository-url>
    cd task-management-web
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Environment Variables**
    Create a `.env` file in the root directory based on `.env.example` (if available) and configure your API URL.
+
    ```env
-   VITE_API_BASE_URL=http://localhost:3000/api
+   VITE_API_BASE_URL=http://localhost:3000/api/v1
    ```
 
 4. **Run the Development Server**
