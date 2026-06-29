@@ -161,10 +161,10 @@ export const TaskTableSection = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tasks.length === 0 ? (
+          {tasks?.length === 0 ? (
             <EmptyRow />
           ) : (
-            tasks.map((task) => (
+            tasks?.map((task) => (
               <TableRow key={task.id} className="group">
                 <TableCell className="font-medium">{task.title}</TableCell>
                 <TableCell className="hidden max-w-[320px] truncate text-muted-foreground xl:table-cell">

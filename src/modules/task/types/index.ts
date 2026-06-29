@@ -1,5 +1,13 @@
 export type TaskPriority = "Low" | "Medium" | "High";
 export type TaskStatus = "Open" | "In Progress" | "Testing" | "Done";
+export type TaskSortBy =
+  | "createdAt"
+  | "updatedAt"
+  | "dueDate"
+  | "title"
+  | "priority"
+  | "status";
+export type TaskSortOrder = "asc" | "desc";
 
 export interface UserRef {
   id: string;
@@ -15,16 +23,24 @@ export interface Task {
   priority: TaskPriority;
   status: TaskStatus;
   dueDate?: string;
-  createdBy: UserRef;
-  assignedTo?: UserRef;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface TaskFilter {
-  title?: string;
-  priority?: TaskPriority | "";
-  status?: TaskStatus | "";
+  search?: string;
+  priority?: TaskPriority;
+  status?: TaskStatus;
+}
+
+export interface ListTaskParams {
+  page?: number;
+  limit?: number;
+  sortBy?: TaskSortBy;
+  sortOrder?: TaskSortOrder;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  search?: string;
 }
 
 export interface CreateTaskDto {
@@ -35,6 +51,22 @@ export interface CreateTaskDto {
   dueDate: string;
 }
 
-export interface CreateTaskApiResponse {
-  data: Task;
+export interface CreateTaskApiResponse extends Task {
+  createdBy: string;
+  assignTo: string;
+}
+
+export interface FetchTasksApiResponse extends Task {
+  createdBy: UserRef;
+  assignTo: UserRef;
+}
+
+export interface ListTasksApiResponse {
+  data: FetchTasksApiResponse[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }

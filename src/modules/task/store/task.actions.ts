@@ -1,11 +1,6 @@
-import type {
-  CreateTaskDto,
-  TaskFilter,
-  TaskPriority,
-  TaskStatus,
-} from "../types";
-import { createTaskApi } from "../api/task.api";
-import { getApiErrorMessage } from "../../../utils/get-api-error-message";
+import type { CreateTaskDto, ListTaskParams, TaskFilter } from "../types";
+import { createTaskApi, fetchTasksApi } from "../api/task.api";
+import { getApiErrorMessage } from "../../../core/api/response";
 import {
   taskFilterStore,
   taskCreateFormLoadingStore,
@@ -13,7 +8,23 @@ import {
   taskCreateErrorStore,
   tasksDataStore,
   taskSearchStore,
+  tasksLoadingStore,
+  tasksErrorStore,
+  taskPaginationStore,
 } from "./task.store";
+import type { PaginationOptions } from "@/core/interfaces";
+
+const buildListTaskParams = (): ListTaskParams => {
+  return {
+    page: 1,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    search: taskSearchStore.value,
+    priority: taskFilterStore.value.priority,
+    status: taskFilterStore.value.status,
+  };
+};
 
 export const setTaskFilterAction = (filter: TaskFilter): void => {
   taskFilterStore.value = filter;
@@ -21,6 +32,32 @@ export const setTaskFilterAction = (filter: TaskFilter): void => {
 
 export const setTaskSearchAction = (query: string): void => {
   taskSearchStore.value = query;
+};
+
+export const setTaskPaginationAction = (
+  pagination: PaginationOptions,
+): void => {
+  taskPaginationStore.value = pagination;
+};
+
+export const resetTaskFilterAction = (): void => {
+  taskFilterStore.value = {
+    priority: null,
+    status: null,
+  };
+};
+
+export const resetTaskSearchAction = (): void => {
+  taskSearchStore.value = "";
+};
+
+export const resetTaskPaginationAction = (): void => {
+  taskPaginationStore.value = {
+    page: 1,
+    limit: 10,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  };
 };
 
 export const openTaskCreateFormPanelAction = (): void => {
@@ -38,13 +75,12 @@ export const createTaskAction = async (
   taskCreateErrorStore.value = null;
 
   try {
-    const { data: response } = await createTaskApi(dto);
-    const task = response.data;
-
-    const currentTasks = tasksDataStore.value || [];
-    tasksDataStore.value = [...currentTasks, task];
+    await createTaskApi(dto);
 
     closeTaskCreateFormPanelAction();
+    resetTaskFilterAction();
+    resetTaskSearchAction();
+    resetTaskPaginationAction();
 
     return true;
   } catch (error: any) {
@@ -58,106 +94,26 @@ export const createTaskAction = async (
   }
 };
 
-export const seedDummyTasksAction = (): void => {
-  tasksDataStore.value = [
-    {
-      id: "1",
-      title: "Design new dashboard layout",
-      description: "Create wireframes and mockups for the new admin dashboard.",
-      priority: "High" as TaskPriority,
-      status: "In Progress" as TaskStatus,
-      dueDate: "2026-07-05",
-      createdBy: {
-        id: "u1",
-        firstName: "Alice",
-        lastName: "Smith",
-        email: "alice@example.com",
-      },
-      createdAt: "2026-06-20T08:00:00Z",
-      updatedAt: "2026-06-25T10:00:00Z",
-    },
-    {
-      id: "2",
-      title: "Implement authentication module",
-      description: "Build login, register and JWT token refresh flows.",
-      priority: "High" as TaskPriority,
-      status: "Done" as TaskStatus,
-      dueDate: "2026-06-28",
-      createdBy: {
-        id: "u1",
-        firstName: "Alice",
-        lastName: "Smith",
-        email: "alice@example.com",
-      },
-      createdAt: "2026-06-15T09:00:00Z",
-      updatedAt: "2026-06-27T16:00:00Z",
-    },
-    {
-      id: "3",
-      title: "Write unit tests for API layer",
-      description: "Cover all service functions with Jest unit tests.",
-      priority: "Medium" as TaskPriority,
-      status: "Open" as TaskStatus,
-      dueDate: "2026-07-10",
-      createdBy: {
-        id: "u2",
-        firstName: "Bob",
-        lastName: "Jones",
-        email: "bob@example.com",
-      },
-      createdAt: "2026-06-22T11:00:00Z",
-      updatedAt: "2026-06-22T11:00:00Z",
-    },
-    {
-      id: "4",
-      title: "Set up CI/CD pipeline",
-      description:
-        "Configure GitHub Actions for automated testing and deployment.",
-      priority: "Medium" as TaskPriority,
-      status: "Testing" as TaskStatus,
-      dueDate: "2026-07-08",
-      createdBy: {
-        id: "u3",
-        firstName: "Carol",
-        lastName: "White",
-        email: "carol@example.com",
-      },
-      createdAt: "2026-06-18T14:00:00Z",
-      updatedAt: "2026-06-26T09:00:00Z",
-    },
-    {
-      id: "5",
-      title: "Migrate database schema",
-      description:
-        "Apply pending Mongoose schema migrations to staging environment.",
-      priority: "Low" as TaskPriority,
-      status: "Open" as TaskStatus,
-      dueDate: "2026-07-15",
-      createdBy: {
-        id: "u2",
-        firstName: "Bob",
-        lastName: "Jones",
-        email: "bob@example.com",
-      },
-      createdAt: "2026-06-23T07:00:00Z",
-      updatedAt: "2026-06-23T07:00:00Z",
-    },
-    {
-      id: "6",
-      title: "Performance audit",
-      description:
-        "Run Lighthouse audits and address critical performance issues.",
-      priority: "Low" as TaskPriority,
-      status: "Open" as TaskStatus,
-      dueDate: "2026-07-20",
-      createdBy: {
-        id: "u1",
-        firstName: "Alice",
-        lastName: "Smith",
-        email: "alice@example.com",
-      },
-      createdAt: "2026-06-26T13:00:00Z",
-      updatedAt: "2026-06-26T13:00:00Z",
-    },
-  ];
+export const fetchTasksAction = async () => {
+  tasksLoadingStore.value = true;
+  tasksErrorStore.value = null;
+
+  const params = buildListTaskParams();
+
+  try {
+    const data = await fetchTasksApi(params);
+
+    if (params.page === 1) {
+      tasksDataStore.value = data.items;
+    } else {
+      tasksDataStore.value = [...tasksDataStore.value, ...data.items];
+    }
+
+    return true;
+  } catch (error: any) {
+    tasksErrorStore.value = getApiErrorMessage(error, "Unable to fetch tasks");
+    return false;
+  } finally {
+    tasksLoadingStore.value = false;
+  }
 };

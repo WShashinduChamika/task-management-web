@@ -6,21 +6,30 @@ import {
   tasksErrorStore,
   taskFilterStore,
   taskSearchStore,
-  filteredTasks,
 } from "../store/task.store";
 import {
-  seedDummyTasksAction,
+  fetchTasksAction,
+  //seedDummyTasksAction,
   setTaskFilterAction,
   setTaskSearchAction,
 } from "../store/task.actions";
 import type { TaskFilter } from "../types";
+import { toast } from "sonner";
 
 export const useTasks = () => {
   useSignals();
 
-  const loadTasks = () => {
-    if (tasksDataStore.value.length === 0) {
-      seedDummyTasksAction();
+  const loadTasks = async () => {
+    // if (tasksDataStore.value.length === 0) {
+    //   seedDummyTasksAction();
+    // }
+    const ok = await fetchTasksAction();
+    if (!ok) {
+      toast.error("Failed to fetch tasks", {
+        description:
+          tasksErrorStore.value ?? "Something went wrong. Please try again.",
+        duration: 5000,
+      });
     }
   };
 
@@ -36,7 +45,7 @@ export const useTasks = () => {
   const handlePriorityChange = (value: string) => {
     const newFilter: TaskFilter = {
       ...taskFilterStore.value,
-      priority: (value === "all" ? "" : value) as TaskFilter["priority"],
+      priority: (value === "all" ? null : value) as TaskFilter["priority"],
     };
     setTaskFilterAction(newFilter);
   };
@@ -44,7 +53,7 @@ export const useTasks = () => {
   const handleStatusChange = (value: string) => {
     const newFilter: TaskFilter = {
       ...taskFilterStore.value,
-      status: (value === "all" ? "" : value) as TaskFilter["status"],
+      status: (value === "all" ? null : value) as TaskFilter["status"],
     };
     setTaskFilterAction(newFilter);
   };
@@ -55,7 +64,7 @@ export const useTasks = () => {
   };
 
   return {
-    tasks: filteredTasks.value,
+    tasks: tasksDataStore.value,
     isLoading: tasksLoadingStore.value,
     error: tasksErrorStore.value,
     filter: taskFilterStore.value,
