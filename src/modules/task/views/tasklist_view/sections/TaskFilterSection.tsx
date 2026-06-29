@@ -1,4 +1,5 @@
 import { useSignals } from "@preact/signals-react/runtime";
+import { useEffect } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Input } from "../../../../../components/ui/input";
 import { Button } from "../../../../../components/ui/button";
@@ -10,12 +11,23 @@ import {
   SelectValue,
 } from "../../../../../components/ui/select";
 import { useTasks } from "../../../hooks/useTasks";
+import { isAdminUserStore } from "@/modules/auth/store/auth.store";
+import { useActiveUsers } from "@/modules/user/hooks/useActiveUsers";
 
 const PRIORITY_OPTIONS = ["Low", "Medium", "High"] as const;
 const STATUS_OPTIONS = ["Open", "In Progress", "Testing", "Done"] as const;
 
 export const TaskFilterSection = () => {
   useSignals();
+
+  const isAdmin = isAdminUserStore.value;
+  const { users, isLoading: isUsersLoading, loadActiveUsers } = useActiveUsers();
+
+  useEffect(() => {
+    if (isAdmin) {
+      loadActiveUsers();
+    }
+  }, [isAdmin, loadActiveUsers]);
 
   const {
     search,
@@ -24,6 +36,8 @@ export const TaskFilterSection = () => {
     handleSearchChange,
     handlePriorityChange,
     handleStatusChange,
+    handleCreatedByChange,
+    handleAssignedToChange,
     handleClearFilters,
   } = useTasks();
 
@@ -40,8 +54,48 @@ export const TaskFilterSection = () => {
         />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <SlidersHorizontal className="size-4 shrink-0 text-muted-foreground" />
+
+        {isAdmin && (
+          <>
+            <Select
+              value={filter.createdBy || "all"}
+              onValueChange={handleCreatedByChange}
+              disabled={isUsersLoading}
+            >
+              <SelectTrigger id="task-created-by-filter" className="w-[140px]">
+                <SelectValue placeholder="Created By" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Creators</SelectItem>
+                {users.map((user) => (
+                  <SelectItem key={`creator-${user.id}`} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={filter.assignedTo || "all"}
+              onValueChange={handleAssignedToChange}
+              disabled={isUsersLoading}
+            >
+              <SelectTrigger id="task-assigned-to-filter" className="w-[140px]">
+                <SelectValue placeholder="Assigned To" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Assignees</SelectItem>
+                {users.map((user) => (
+                  <SelectItem key={`assignee-${user.id}`} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </>
+        )}
 
         <Select
           value={filter.priority || "all"}

@@ -46,6 +46,8 @@ const buildListTaskParams = (): ListTaskParams => {
     search: taskSearchStore.value,
     priority: taskFilterStore.value.priority,
     status: taskFilterStore.value.status,
+    createdBy: taskFilterStore.value.createdBy,
+    assignedTo: taskFilterStore.value.assignedTo,
   };
 };
 
@@ -69,6 +71,8 @@ export const resetTaskFilterAction = (): void => {
   taskFilterStore.value = {
     priority: null,
     status: null,
+    createdBy: undefined,
+    assignedTo: undefined,
   };
 };
 

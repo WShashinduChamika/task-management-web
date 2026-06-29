@@ -39,7 +39,12 @@ export const useTasks = () => {
   const filter = taskFilterStore.value;
   const search = taskSearchStore.value;
 
-  const hasActiveFilters = !!search || !!filter.priority || !!filter.status;
+  const hasActiveFilters =
+    !!search ||
+    !!filter.priority ||
+    !!filter.status ||
+    !!filter.createdBy ||
+    !!filter.assignedTo;
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTaskSearchAction(e.target.value);
@@ -57,6 +62,22 @@ export const useTasks = () => {
     const newFilter: TaskFilter = {
       ...taskFilterStore.value,
       status: (value === "all" ? null : value) as TaskFilter["status"],
+    };
+    setTaskFilterAction(newFilter);
+  };
+
+  const handleCreatedByChange = (value: string) => {
+    const newFilter: TaskFilter = {
+      ...taskFilterStore.value,
+      createdBy: (value === "all" ? undefined : value) as TaskFilter["createdBy"],
+    };
+    setTaskFilterAction(newFilter);
+  };
+
+  const handleAssignedToChange = (value: string) => {
+    const newFilter: TaskFilter = {
+      ...taskFilterStore.value,
+      assignedTo: (value === "all" ? undefined : value) as TaskFilter["assignedTo"],
     };
     setTaskFilterAction(newFilter);
   };
@@ -89,6 +110,8 @@ export const useTasks = () => {
     handleSearchChange,
     handlePriorityChange,
     handleStatusChange,
+    handleCreatedByChange,
+    handleAssignedToChange,
     handleClearFilters,
     handlePageChange,
     handleLimitChange,

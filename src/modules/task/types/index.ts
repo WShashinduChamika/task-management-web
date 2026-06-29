@@ -31,6 +31,8 @@ export interface TaskFilter {
   search?: string;
   priority?: TaskPriority;
   status?: TaskStatus;
+  createdBy?: string;
+  assignedTo?: string;
 }
 
 export interface ListTaskParams {
@@ -41,6 +43,8 @@ export interface ListTaskParams {
   status?: TaskStatus;
   priority?: TaskPriority;
   search?: string;
+  createdBy?: string;
+  assignedTo?: string;
 }
 
 export interface CreateTaskDto {
