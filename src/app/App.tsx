@@ -21,6 +21,7 @@ function App() {
           <Route path="tasks/:id" element={<TaskDetailView />} />
         </Route>
       </Route>
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }

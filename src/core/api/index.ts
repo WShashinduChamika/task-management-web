@@ -19,6 +19,7 @@ api.interceptors.response.use(
     if (err?.response?.status === 401) {
       clearAuthStorage();
       authUserStore.value = null;
+      window.location.href = "/";
     }
     return Promise.reject(err);
   },

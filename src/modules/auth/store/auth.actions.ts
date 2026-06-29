@@ -1,6 +1,6 @@
-import { setAuthToken, setAuthUser } from "../../../core/storage/auth.storage";
+import { setAuthToken, setAuthUser, clearAuthStorage, setRefreshToken } from "../../../core/storage/auth.storage";
 import { getApiErrorMessage } from "../../../core/api/response";
-import { loginApi, registerApi } from "../api/auth.api";
+import { loginApi, registerApi, logoutApi } from "../api/auth.api";
 import type { LoginDto, RegisterDto } from "../types";
 import {
   authUserStore,
@@ -18,6 +18,9 @@ export const registerAction = async (dto: RegisterDto): Promise<boolean> => {
     const { data } = await registerApi(dto);
     const responseData = (data as any).data || data; // Handle wrapped API response
     setAuthToken(responseData.accessToken);
+    if (responseData.refreshToken) {
+      setRefreshToken(responseData.refreshToken);
+    }
     setAuthUser(responseData.user);
     authUserStore.value = responseData.user;
     return true;
@@ -40,6 +43,9 @@ export const loginAction = async (dto: LoginDto): Promise<boolean> => {
     const { data } = await loginApi(dto);
     const responseData = (data as any).data || data;
     setAuthToken(responseData.accessToken);
+    if (responseData.refreshToken) {
+      setRefreshToken(responseData.refreshToken);
+    }
     setAuthUser(responseData.user);
     authUserStore.value = responseData.user;
     loginLoadingStore.value = false;
@@ -49,5 +55,16 @@ export const loginAction = async (dto: LoginDto): Promise<boolean> => {
     return false;
   } finally {
     loginLoadingStore.value = false;
+  }
+};
+
+export const logoutAction = async (): Promise<void> => {
+  try {
+    await logoutApi();
+  } catch (error) {
+    console.error("Logout API failed", error);
+  } finally {
+    clearAuthStorage();
+    authUserStore.value = null;
   }
 };
