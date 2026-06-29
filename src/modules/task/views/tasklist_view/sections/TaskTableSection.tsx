@@ -36,48 +36,41 @@ import { TaskPaginationSection } from "./TaskPaginationSection";
 
 const priorityConfig: Record<
   TaskPriority,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  }
+  { label: string; className: string }
 > = {
-  High: { label: "High", variant: "destructive" },
-  Medium: { label: "Medium", variant: "default" },
-  Low: { label: "Low", variant: "secondary" },
+  High: { label: "High", className: "bg-cherry-red-2 text-cherry-red-10 border-cherry-red-4" },
+  Medium: { label: "Medium", className: "bg-lemon-yellow-2 text-lemon-yellow-11 border-lemon-yellow-5" },
+  Low: { label: "Low", className: "bg-sage-green-2 text-sage-green-11 border-sage-green-5" },
 };
 
 const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
   Open: {
     label: "Open",
-    className:
-      "border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20",
+    className: "border-stone-neutral-6 bg-stone-neutral-2 text-stone-neutral-11 hover:bg-stone-neutral-3",
   },
   "In Progress": {
     label: "In Progress",
-    className:
-      "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20",
+    className: "border-ocean-blue-5 bg-ocean-blue-2 text-ocean-blue-10 hover:bg-ocean-blue-3",
   },
   Testing: {
     label: "Testing",
-    className:
-      "border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20",
+    className: "border-flash-purple-5 bg-flash-purple-2 text-flash-purple-10 hover:bg-flash-purple-3",
   },
   Done: {
     label: "Done",
-    className:
-      "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20",
+    className: "border-forest-green-5 bg-forest-green-2 text-forest-green-10 hover:bg-forest-green-3",
   },
 };
 
 const PriorityBadge = ({ priority }: { priority: TaskPriority }) => {
   const cfg = priorityConfig[priority];
-  return <Badge variant={cfg.variant}>{cfg.label}</Badge>;
+  return <Badge variant="outline" className={`${cfg.className} font-semibold px-2.5 py-0.5 rounded-md`}>{cfg.label}</Badge>;
 };
 
 const StatusBadge = ({ status }: { status: TaskStatus }) => {
   const cfg = statusConfig[status];
   return (
-    <Badge variant="outline" className={cfg.className}>
+    <Badge variant="outline" className={`${cfg.className} font-semibold px-2.5 py-0.5 rounded-md`}>
       {cfg.label}
     </Badge>
   );
@@ -184,10 +177,10 @@ export const TaskTableSection = ({
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div className="rounded-2xl border border-stone-neutral-4 bg-white/95 backdrop-blur-xl shadow-lg overflow-hidden">
       <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
+        <TableHeader className="bg-stone-neutral-2/80">
+          <TableRow className="hover:bg-transparent border-b-stone-neutral-4">
             <TableHead className="w-[280px]">Title</TableHead>
             <TableHead className="hidden xl:table-cell">Description</TableHead>
             <TableHead className="w-[100px]">Priority</TableHead>
@@ -205,7 +198,7 @@ export const TaskTableSection = ({
             <EmptyRow isAdmin={isAdmin} />
           ) : (
             tasks?.map((task) => (
-              <TableRow key={task.id} className="group">
+              <TableRow key={task.id} className="group hover:bg-ocean-blue-1/40 transition-colors border-b-stone-neutral-4">
                 <TableCell className="font-medium">{task.title}</TableCell>
                 <TableCell className="hidden max-w-[320px] truncate text-muted-foreground xl:table-cell">
                   {task.description ?? "—"}
