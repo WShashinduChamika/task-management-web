@@ -5,6 +5,7 @@ import { CheckHealthView } from "../modules/health";
 import "./App.css";
 import { DashboardLayout } from "../shared/ui/layouts/DashBoardLayout";
 import { TaskListView, TaskDetailView } from "@/modules/task/views";
+import { ProfileView } from "@/modules/user/views/profile_view/ProfileView";
 import { AuthGuard } from "@/shared/guards/AuthGard";
 
 function App() {
@@ -16,9 +17,10 @@ function App() {
 
       <Route element={<AuthGuard />}>
         <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="/tasks" replace />} />
+          <Route index element={<Navigate to="tasks" replace />} />
           <Route path="tasks" element={<TaskListView />} />
           <Route path="tasks/:id" element={<TaskDetailView />} />
+          <Route path="profile" element={<ProfileView />} />
         </Route>
       </Route>
 
