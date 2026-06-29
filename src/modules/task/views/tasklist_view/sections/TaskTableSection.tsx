@@ -1,4 +1,5 @@
 import { useSignals } from "@preact/signals-react/runtime";
+import { Skeleton } from "../../../../../components/ui/skeleton";
 import { format } from "date-fns";
 import {
   CalendarDays,
@@ -102,6 +103,45 @@ const EmptyRow = ({ isAdmin }: { isAdmin: boolean }) => (
   </TableRow>
 );
 
+const TaskTableSkeletonRows = ({ isAdmin }: { isAdmin: boolean }) => {
+  return (
+    <>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <TableRow key={i} className="border-b-stone-neutral-4">
+          <TableCell className="pl-4 sm:pl-6">
+            <Skeleton className="h-5 w-3/4" />
+          </TableCell>
+          <TableCell className="hidden xl:table-cell">
+            <Skeleton className="h-5 w-full" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-6 w-16 rounded-md" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-6 w-20 rounded-md" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-5 w-24" />
+          </TableCell>
+          {isAdmin && (
+            <TableCell>
+              <Skeleton className="h-5 w-32" />
+            </TableCell>
+          )}
+          {isAdmin && (
+            <TableCell>
+              <Skeleton className="h-5 w-32" />
+            </TableCell>
+          )}
+          <TableCell className="pr-4 sm:pr-6">
+            <Skeleton className="size-8 rounded-md mx-auto" />
+          </TableCell>
+        </TableRow>
+      ))}
+    </>
+  );
+};
+
 const RowActions = ({
   task,
   onEdit,
@@ -168,14 +208,6 @@ export const TaskTableSection = ({
   const { tasks, isLoading } = useTasks();
   const isAdmin = isAdminUserStore.value;
 
-  if (isLoading) {
-    return (
-      <div className="flex h-48 items-center justify-center text-muted-foreground">
-        <span className="text-sm">Loading tasks…</span>
-      </div>
-    );
-  }
-
   return (
     <div className="rounded-2xl border border-stone-neutral-4 bg-white/95 backdrop-blur-xl shadow-lg overflow-hidden">
       <Table>
@@ -194,7 +226,9 @@ export const TaskTableSection = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tasks?.length === 0 ? (
+          {isLoading ? (
+            <TaskTableSkeletonRows isAdmin={isAdmin} />
+          ) : tasks?.length === 0 ? (
             <EmptyRow isAdmin={isAdmin} />
           ) : (
             tasks?.map((task) => (
