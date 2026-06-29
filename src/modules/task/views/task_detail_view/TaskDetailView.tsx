@@ -32,36 +32,29 @@ import type { TaskPriority, TaskStatus } from "../../types";
 
 const priorityConfig: Record<
   TaskPriority,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  }
+  { label: string; className: string }
 > = {
-  High: { label: "High", variant: "destructive" },
-  Medium: { label: "Medium", variant: "default" },
-  Low: { label: "Low", variant: "secondary" },
+  High: { label: "High", className: "bg-cherry-red-2 text-cherry-red-10 border-cherry-red-4" },
+  Medium: { label: "Medium", className: "bg-lemon-yellow-2 text-lemon-yellow-11 border-lemon-yellow-5" },
+  Low: { label: "Low", className: "bg-sage-green-2 text-sage-green-11 border-sage-green-5" },
 };
 
 const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
   Open: {
     label: "Open",
-    className:
-      "border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20",
+    className: "border-stone-neutral-6 bg-stone-neutral-2 text-stone-neutral-11 hover:bg-stone-neutral-3",
   },
   "In Progress": {
     label: "In Progress",
-    className:
-      "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20",
+    className: "border-ocean-blue-5 bg-ocean-blue-2 text-ocean-blue-10 hover:bg-ocean-blue-3",
   },
   Testing: {
     label: "Testing",
-    className:
-      "border-purple-500/40 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20",
+    className: "border-flash-purple-5 bg-flash-purple-2 text-flash-purple-10 hover:bg-flash-purple-3",
   },
   Done: {
     label: "Done",
-    className:
-      "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20",
+    className: "border-forest-green-5 bg-forest-green-2 text-forest-green-10 hover:bg-forest-green-3",
   },
 };
 
@@ -88,12 +81,12 @@ const MetaItem = ({
   label: string;
   children: React.ReactNode;
 }) => (
-  <div className="flex flex-col gap-1.5">
-    <span className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-      <Icon className="size-3.5" />
+  <div className="flex flex-col gap-2 p-4 bg-stone-neutral-2/40 rounded-xl border border-stone-neutral-4 shadow-sm">
+    <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ocean-blue-9">
+      <Icon className="size-4" />
       {label}
     </span>
-    <div className="text-sm font-medium text-foreground">{children}</div>
+    <div className="text-base font-medium text-primary">{children}</div>
   </div>
 );
 
@@ -133,16 +126,22 @@ const userLabel = (
     email?: string;
   } | null,
 ) => {
-  if (!user) return <span className="text-muted-foreground/50">—</span>;
+  if (!user) return <span className="text-muted-foreground/50 font-medium">—</span>;
   const name = [user.firstName, user.lastName].filter(Boolean).join(" ");
+  const initials = `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || "U";
   return (
-    <div className="flex flex-col gap-0.5">
-      {name && <span>{name}</span>}
-      {user.email && (
-        <span className="text-xs font-normal text-muted-foreground">
-          {user.email}
-        </span>
-      )}
+    <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-center justify-center size-9 rounded-full bg-ocean-blue-9 text-white font-bold text-sm shadow-sm">
+        {initials}
+      </div>
+      <div className="flex flex-col">
+        {name && <span className="text-sm font-semibold text-primary">{name}</span>}
+        {user.email && (
+          <span className="text-xs font-medium text-secondary-foreground">
+            {user.email}
+          </span>
+        )}
+      </div>
     </div>
   );
 };
@@ -176,34 +175,43 @@ export const TaskDetailView = () => {
   const statusCfg = statusConfig[task.status];
 
   return (
-    <div className="flex flex-col gap-6 p-4 sm:p-6">
-      <div className="flex items-center gap-3">
-        <Button
-          id="task-detail-back-btn"
-          variant="outline"
-          size="icon"
-          className="size-8 shrink-0"
-          onClick={() => navigate(-1)}
-          title="Back to tasks"
-        >
-          <ArrowLeft className="size-4" />
-          <span className="sr-only">Back</span>
-        </Button>
-        <div className="flex items-center gap-2">
-          <ClipboardList className="size-5 text-primary" />
-          <h1 className="text-lg font-semibold tracking-tight">Task Details</h1>
+    <div className="flex flex-col gap-4 max-w-[1200px] mx-auto w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/70 backdrop-blur-xl p-3 sm:p-4 rounded-xl border border-stone-neutral-4 shadow-sm">
+        <div className="flex items-center gap-3">
+          <Button
+            id="task-detail-back-btn"
+            variant="outline"
+            size="icon"
+            className="size-9 shrink-0 rounded-lg border-stone-neutral-4 hover:bg-stone-neutral-3 text-stone-neutral-11"
+            onClick={() => navigate(-1)}
+            title="Back to tasks"
+          >
+            <ArrowLeft className="size-4" />
+            <span className="sr-only">Back</span>
+          </Button>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-ocean-blue-2 rounded-lg text-ocean-blue-9 shadow-sm">
+              <ClipboardList className="size-5" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight text-primary leading-tight">Task Details</h1>
+              <p className="text-xs text-secondary-foreground font-medium">
+                View and manage task information.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <Card>
-        <CardHeader className="gap-2">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <CardTitle className="text-xl leading-snug">{task.title}</CardTitle>
-            <div className="flex items-center gap-2">
+      <Card className="rounded-2xl border-stone-neutral-4 bg-white/95 backdrop-blur-xl shadow-lg overflow-hidden">
+        <CardHeader className="gap-4 px-6 sm:px-8 py-6 bg-stone-neutral-1/50 border-b border-stone-neutral-4">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <CardTitle className="text-2xl font-extrabold tracking-tight text-primary leading-snug">{task.title}</CardTitle>
+            <div className="flex items-center gap-3 shrink-0">
               <Button
                 id="task-detail-update-btn"
                 variant="outline"
-                size="sm"
+                className="h-9 rounded-lg border-stone-neutral-4 text-stone-neutral-11 hover:text-ocean-blue-10 hover:bg-ocean-blue-2 hover:border-ocean-blue-4 shadow-sm font-semibold px-4 transition-colors"
                 onClick={() => openPanel(task)}
               >
                 <Pencil className="mr-1.5 size-4" /> Update
@@ -211,7 +219,7 @@ export const TaskDetailView = () => {
               <Button
                 id="task-detail-delete-btn"
                 variant="destructive"
-                size="sm"
+                className="h-9 rounded-lg shadow-sm font-semibold px-4 hover:bg-destructive/90 transition-colors"
                 onClick={() => openDelete(task.id)}
               >
                 <Trash2 className="mr-1.5 size-4" /> Delete
@@ -219,24 +227,24 @@ export const TaskDetailView = () => {
             </div>
           </div>
           {task.description && (
-            <CardDescription className="text-sm leading-relaxed text-muted-foreground">
+            <CardDescription className="text-base leading-relaxed text-secondary-foreground font-medium">
               {task.description}
             </CardDescription>
           )}
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-6">
-          <Separator />
-
-          <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4 sm:gap-y-8">
+        <CardContent className="flex flex-col gap-8 p-6 sm:p-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <MetaItem icon={Activity} label="Status">
-              <Badge variant="outline" className={statusCfg.className}>
+              <Badge variant="outline" className={`${statusCfg.className} px-3 py-1 text-sm font-semibold rounded-md`}>
                 {statusCfg.label}
               </Badge>
             </MetaItem>
 
             <MetaItem icon={Flag} label="Priority">
-              <Badge variant={priorityCfg.variant}>{priorityCfg.label}</Badge>
+              <Badge variant="outline" className={`${priorityCfg.className} px-3 py-1 text-sm font-semibold rounded-md`}>
+                {priorityCfg.label}
+              </Badge>
             </MetaItem>
 
             <MetaItem icon={CalendarDays} label="Due Date">
@@ -247,14 +255,14 @@ export const TaskDetailView = () => {
               {formatDate(task.createdAt)}
             </MetaItem>
 
-            <MetaItem icon={Clock} label="Last Updated">
+            <MetaItem icon={Clock} label="Updated">
               {formatDate(task.updatedAt)}
             </MetaItem>
           </div>
 
-          <Separator />
+          <Separator className="bg-stone-neutral-4" />
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <MetaItem icon={User} label="Created By">
               {userLabel("createdBy" in task ? (task as any).createdBy : null)}
             </MetaItem>
