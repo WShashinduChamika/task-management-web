@@ -6,14 +6,19 @@ import { TaskTableSection } from "./sections/TaskTableSection";
 import { TaskFormPanelSection } from "./sections/TaskFormPanelSection";
 import { useTasks } from "../../hooks/useTasks";
 import { useCreateTask } from "../../hooks/useCreateTask";
+import { useUpdateTask } from "../../hooks/useUpdateTask";
 import { useEffect } from "react";
 
 export const TaskListView = () => {
   useSignals();
 
   const { loadTasks, filter, search, pagination } = useTasks();
-  const { form, isPanelOpen, isLoading, openPanel, closePanel, onSubmit } =
+
+  const { form: createForm, isPanelOpen: isCreateOpen, isLoading: isCreating, openPanel: openCreate, closePanel: closeCreate, onSubmit: onCreateSubmit } =
     useCreateTask();
+
+  const { form: updateForm, isPanelOpen: isUpdateOpen, isLoading: isUpdating, openPanel: openUpdate, closePanel: closeUpdate, onSubmit: onUpdateSubmit } =
+    useUpdateTask();
 
   useEffect(() => {
     loadTasks();
@@ -34,7 +39,7 @@ export const TaskListView = () => {
         <Button
           id="create-task-btn"
           size="sm"
-          onClick={openPanel}
+          onClick={openCreate}
           className="mt-2 w-full sm:mt-0 sm:w-auto"
         >
           <Plus className="mr-1.5 size-4" />
@@ -44,15 +49,26 @@ export const TaskListView = () => {
 
       <TaskFilterSection />
 
-      <TaskTableSection />
+      <TaskTableSection onEdit={openUpdate} />
 
+      {/* Create panel */}
       <TaskFormPanelSection
-        open={isPanelOpen}
+        open={isCreateOpen}
         isEditing={false}
-        form={form}
-        onSubmit={onSubmit}
-        onClose={closePanel}
-        isLoading={isLoading}
+        form={createForm}
+        onSubmit={onCreateSubmit}
+        onClose={closeCreate}
+        isLoading={isCreating}
+      />
+
+      {/* Update panel */}
+      <TaskFormPanelSection
+        open={isUpdateOpen}
+        isEditing={true}
+        form={updateForm}
+        onSubmit={onUpdateSubmit}
+        onClose={closeUpdate}
+        isLoading={isUpdating}
       />
     </div>
   );

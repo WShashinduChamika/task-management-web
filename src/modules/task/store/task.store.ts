@@ -23,3 +23,7 @@ export const taskCreateErrorStore = signal<string | null>(null);
 export const taskDetailStore = signal<FetchTaskByIdApiResponse | null>(null);
 export const taskDetailLoadingStore = signal(false);
 export const taskDetailErrorStore = signal<string | null>(null);
+
+export const taskUpdateFormPanelOpenStore = signal(false);
+export const taskUpdateFormLoadingStore = signal(false);
+export const taskUpdateErrorStore = signal<string | null>(null);

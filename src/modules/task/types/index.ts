@@ -51,6 +51,14 @@ export interface CreateTaskDto {
   dueDate: string;
 }
 
+export interface UpdateTaskDto {
+  title?: string;
+  description?: string;
+  priority?: TaskPriority;
+  status?: TaskStatus;
+  dueDate?: string;
+}
+
 export interface CreateTaskApiResponse extends Task {
   createdBy: string;
   assignTo: string;

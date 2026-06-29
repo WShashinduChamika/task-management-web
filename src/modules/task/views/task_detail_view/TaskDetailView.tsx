@@ -24,6 +24,8 @@ import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { Separator } from "../../../../components/ui/separator";
 import { useTask } from "../../hooks/useTask";
+import { useUpdateTask } from "../../hooks/useUpdateTask";
+import { TaskFormPanelSection } from "../tasklist_view/sections/TaskFormPanelSection";
 import type { TaskPriority, TaskStatus } from "../../types";
 
 const priorityConfig: Record<
@@ -147,6 +149,14 @@ export const TaskDetailView = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { task, isLoading, error } = useTask(id);
+  const {
+    form,
+    isPanelOpen,
+    isLoading: isUpdating,
+    openPanel,
+    closePanel,
+    onSubmit,
+  } = useUpdateTask();
 
   if (isLoading) return "Loading...";
   if (error) return <ErrorState message={error} />;
@@ -181,13 +191,15 @@ export const TaskDetailView = () => {
             <CardTitle className="text-xl leading-snug">{task.title}</CardTitle>
             <div className="flex items-center gap-2">
               <Button
+                id="task-detail-update-btn"
                 variant="outline"
                 size="sm"
-                onClick={() => console.log("Update task", task.id)}
+                onClick={() => openPanel(task)}
               >
                 <Pencil className="mr-1.5 size-4" /> Update
               </Button>
               <Button
+                id="task-detail-delete-btn"
                 variant="destructive"
                 size="sm"
                 onClick={() => console.log("Delete task", task.id)}
@@ -245,6 +257,15 @@ export const TaskDetailView = () => {
           </div>
         </CardContent>
       </Card>
+
+      <TaskFormPanelSection
+        open={isPanelOpen}
+        isEditing={true}
+        form={form}
+        onSubmit={onSubmit}
+        onClose={closePanel}
+        isLoading={isUpdating}
+      />
     </div>
   );
 };

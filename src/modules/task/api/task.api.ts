@@ -6,6 +6,7 @@ import type {
   FetchTaskByIdApiResponse,
   FetchTasksApiResponse,
   ListTaskParams,
+  UpdateTaskDto,
 } from "../types";
 import type { ApiResponse } from "@/core/api/types";
 import { unwrapApiResponse } from "@/core/api/response";
@@ -26,4 +27,13 @@ export const fetchTaskByIdApi = async (id: string) => {
   );
   return unwrapApiResponse(response);
 };
+
+export const updateTaskApi = async (id: string, payload: UpdateTaskDto) => {
+  const response = await api.patch<ApiResponse<FetchTaskByIdApiResponse>>(
+    `/tasks/${id}`,
+    payload,
+  );
+  return unwrapApiResponse(response);
+};
+
 

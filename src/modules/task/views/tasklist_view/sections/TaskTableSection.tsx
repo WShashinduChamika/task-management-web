@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../../../../components/ui/dropdown-menu";
-import type { Task, TaskPriority, TaskStatus } from "../../../types";
+import type { FetchTasksApiResponse, TaskPriority, TaskStatus } from "../../../types";
 import { useTasks } from "@/modules/task/hooks/useTasks";
 import { TaskPaginationSection } from "./TaskPaginationSection";
 
@@ -98,7 +98,13 @@ const EmptyRow = () => (
   </TableRow>
 );
 
-const RowActions = ({ task }: { task: Task }) => {
+const RowActions = ({
+  task,
+  onEdit,
+}: {
+  task: FetchTasksApiResponse;
+  onEdit: (task: FetchTasksApiResponse) => void;
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -125,9 +131,7 @@ const RowActions = ({ task }: { task: Task }) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           id={`task-edit-${task.id}`}
-          onClick={() => {
-            console.log("Edit task");
-          }}
+          onClick={() => onEdit(task)}
         >
           <Pencil className="mr-2 size-3.5" />
           Edit
@@ -148,7 +152,11 @@ const RowActions = ({ task }: { task: Task }) => {
   );
 };
 
-export const TaskTableSection = () => {
+export const TaskTableSection = ({
+  onEdit,
+}: {
+  onEdit: (task: FetchTasksApiResponse) => void;
+}) => {
   useSignals();
 
   const { tasks, isLoading } = useTasks();
@@ -194,7 +202,7 @@ export const TaskTableSection = () => {
                   {formatDueDate(task.dueDate)}
                 </TableCell>
                 <TableCell>
-                  <RowActions task={task} />
+                  <RowActions task={task} onEdit={onEdit} />
                 </TableCell>
               </TableRow>
             ))

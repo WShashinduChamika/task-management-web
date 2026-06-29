@@ -1,8 +1,14 @@
-import type { CreateTaskDto, ListTaskParams, TaskFilter } from "../types";
+import type {
+  CreateTaskDto,
+  ListTaskParams,
+  TaskFilter,
+  UpdateTaskDto,
+} from "../types";
 import {
   createTaskApi,
   fetchTasksApi,
   fetchTaskByIdApi,
+  updateTaskApi,
 } from "../api/task.api";
 import { getApiErrorMessage } from "../../../core/api/response";
 import {
@@ -19,6 +25,9 @@ import {
   taskDetailStore,
   taskDetailLoadingStore,
   taskDetailErrorStore,
+  taskUpdateFormPanelOpenStore,
+  taskUpdateFormLoadingStore,
+  taskUpdateErrorStore,
 } from "./task.store";
 import type { PaginationOptions } from "@/core/interfaces";
 
@@ -77,6 +86,14 @@ export const openTaskCreateFormPanelAction = (): void => {
 
 export const closeTaskCreateFormPanelAction = (): void => {
   taskCreateFormPanelOpenStore.value = false;
+};
+
+export const openTaskUpdateFormPanelAction = (): void => {
+  taskUpdateFormPanelOpenStore.value = true;
+};
+
+export const closeTaskUpdateFormPanelAction = (): void => {
+  taskUpdateFormPanelOpenStore.value = false;
 };
 
 export const createTaskAction = async (
@@ -148,5 +165,34 @@ export const fetchTaskByIdAction = async (id: string): Promise<boolean> => {
     return false;
   } finally {
     taskDetailLoadingStore.value = false;
+  }
+};
+
+export const updateTaskAction = async (
+  id: string,
+  dto: UpdateTaskDto,
+): Promise<boolean> => {
+  taskUpdateFormLoadingStore.value = true;
+  taskUpdateErrorStore.value = null;
+
+  try {
+    const updated = await updateTaskApi(id, dto);
+
+    taskDetailStore.value = updated;
+
+    closeTaskUpdateFormPanelAction();
+    resetTaskFilterAction();
+    resetTaskSearchAction();
+    resetTaskPaginationAction();
+
+    return true;
+  } catch (error: any) {
+    taskUpdateErrorStore.value = getApiErrorMessage(
+      error,
+      "Unable to update task",
+    );
+    return false;
+  } finally {
+    taskUpdateFormLoadingStore.value = false;
   }
 };
