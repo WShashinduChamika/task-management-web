@@ -33,6 +33,7 @@ import type {
 } from "../../../types";
 import { useTasks } from "@/modules/task/hooks/useTasks";
 import { TaskPaginationSection } from "./TaskPaginationSection";
+import { TaskTableSkeleton } from "./TaskTableSkeleton";
 
 const priorityConfig: Record<
   TaskPriority,
@@ -169,11 +170,7 @@ export const TaskTableSection = ({
   const isAdmin = isAdminUserStore.value;
 
   if (isLoading) {
-    return (
-      <div className="flex h-48 items-center justify-center text-muted-foreground">
-        <span className="text-sm">Loading tasks…</span>
-      </div>
-    );
+    return <TaskTableSkeleton />;
   }
 
   return (
