@@ -58,8 +58,10 @@ export interface CreateTaskApiResponse extends Task {
 
 export interface FetchTasksApiResponse extends Task {
   createdBy: UserRef;
-  assignTo: UserRef;
+  assignedTo: UserRef;
 }
+
+export type FetchTaskByIdApiResponse = FetchTasksApiResponse;
 
 export interface ListTasksApiResponse {
   data: FetchTasksApiResponse[];

@@ -1,5 +1,9 @@
 import type { CreateTaskDto, ListTaskParams, TaskFilter } from "../types";
-import { createTaskApi, fetchTasksApi } from "../api/task.api";
+import {
+  createTaskApi,
+  fetchTasksApi,
+  fetchTaskByIdApi,
+} from "../api/task.api";
 import { getApiErrorMessage } from "../../../core/api/response";
 import {
   taskFilterStore,
@@ -12,6 +16,9 @@ import {
   tasksErrorStore,
   taskPaginationStore,
   taskPaginationMetaStore,
+  taskDetailStore,
+  taskDetailLoadingStore,
+  taskDetailErrorStore,
 } from "./task.store";
 import type { PaginationOptions } from "@/core/interfaces";
 
@@ -121,5 +128,25 @@ export const fetchTasksAction = async () => {
     return false;
   } finally {
     tasksLoadingStore.value = false;
+  }
+};
+
+export const fetchTaskByIdAction = async (id: string): Promise<boolean> => {
+  taskDetailLoadingStore.value = true;
+  taskDetailErrorStore.value = null;
+
+  try {
+    const data = await fetchTaskByIdApi(id);
+    taskDetailStore.value = data;
+    return true;
+  } catch (error: any) {
+    taskDetailErrorStore.value = getApiErrorMessage(
+      error,
+      "Failed to load task",
+    );
+    taskDetailStore.value = null;
+    return false;
+  } finally {
+    taskDetailLoadingStore.value = false;
   }
 };

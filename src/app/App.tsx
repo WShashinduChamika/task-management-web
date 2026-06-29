@@ -4,7 +4,7 @@ import { LoginView } from "../modules/auth/views/login_view/LoginView";
 import { CheckHealthView } from "../modules/health";
 import "./App.css";
 import { DashboardLayout } from "../shared/ui/layouts/DashBoardLayout";
-import { TaskListView } from "@/modules/task/views";
+import { TaskListView, TaskDetailView } from "@/modules/task/views";
 import { AuthGuard } from "@/shared/guards/AuthGard";
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Navigate to="/tasks" replace />} />
           <Route path="tasks" element={<TaskListView />} />
+          <Route path="tasks/:id" element={<TaskDetailView />} />
         </Route>
       </Route>
     </Routes>

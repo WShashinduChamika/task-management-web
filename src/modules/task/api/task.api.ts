@@ -3,6 +3,7 @@ import { api } from "../../../core/api";
 import type {
   CreateTaskApiResponse,
   CreateTaskDto,
+  FetchTaskByIdApiResponse,
   FetchTasksApiResponse,
   ListTaskParams,
 } from "../types";
@@ -18,3 +19,11 @@ export const fetchTasksApi = async (params: ListTaskParams) => {
   >("/tasks", { params });
   return unwrapApiResponse(response);
 };
+
+export const fetchTaskByIdApi = async (id: string) => {
+  const response = await api.get<ApiResponse<FetchTaskByIdApiResponse>>(
+    `/tasks/${id}`,
+  );
+  return unwrapApiResponse(response);
+};
+

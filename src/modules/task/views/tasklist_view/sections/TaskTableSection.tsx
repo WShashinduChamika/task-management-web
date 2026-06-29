@@ -1,6 +1,7 @@
 import { useSignals } from "@preact/signals-react/runtime";
 import { format } from "date-fns";
-import { CalendarDays, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { CalendarDays, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -97,43 +98,55 @@ const EmptyRow = () => (
   </TableRow>
 );
 
-const RowActions = ({ task }: { task: Task }) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        id={`task-row-actions-${task.id}`}
-        variant="ghost"
-        size="icon"
-        className="size-8"
-      >
-        <MoreHorizontal className="size-4" />
-        <span className="sr-only">Open menu for {task.title}</span>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" className="w-40">
-      <DropdownMenuItem
-        id={`task-edit-${task.id}`}
-        onClick={() => {
-          console.log("Edit task");
-        }}
-      >
-        <Pencil className="mr-2 size-3.5" />
-        Edit
-      </DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem
-        id={`task-delete-${task.id}`}
-        variant="destructive"
-        onClick={() => {
-          console.log("Delete task");
-        }}
-      >
-        <Trash2 className="mr-2 size-3.5" />
-        Delete
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+const RowActions = ({ task }: { task: Task }) => {
+  const navigate = useNavigate();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          id={`task-row-actions-${task.id}`}
+          variant="ghost"
+          size="icon"
+          className="size-8"
+        >
+          <MoreHorizontal className="size-4" />
+          <span className="sr-only">Open menu for {task.title}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuItem
+          id={`task-view-${task.id}`}
+          onClick={() => navigate(`/dashboard/tasks/${task.id}`)}
+        >
+          <Eye className="mr-2 size-3.5" />
+          View
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          id={`task-edit-${task.id}`}
+          onClick={() => {
+            console.log("Edit task");
+          }}
+        >
+          <Pencil className="mr-2 size-3.5" />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          id={`task-delete-${task.id}`}
+          variant="destructive"
+          onClick={() => {
+            console.log("Delete task");
+          }}
+        >
+          <Trash2 className="mr-2 size-3.5" />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export const TaskTableSection = () => {
   useSignals();
