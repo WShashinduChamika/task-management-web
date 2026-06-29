@@ -23,6 +23,7 @@ import {
 import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { Separator } from "../../../../components/ui/separator";
+import { Skeleton } from "../../../../components/ui/skeleton";
 import { useTask } from "../../hooks/useTask";
 import { useUpdateTask } from "../../hooks/useUpdateTask";
 import { useDeleteTask } from "../../hooks/useDeleteTask";
@@ -146,6 +147,65 @@ const userLabel = (
   );
 };
 
+const TaskDetailSkeleton = () => (
+  <div className="flex flex-col gap-4 max-w-[1200px] mx-auto w-full animate-in fade-in duration-500">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white/70 backdrop-blur-xl p-3 sm:p-4 rounded-xl border border-stone-neutral-4 shadow-sm">
+      <div className="flex items-center gap-3">
+        <Skeleton className="size-9 rounded-lg" />
+        <div className="flex items-center gap-3">
+          <Skeleton className="size-9 rounded-lg" />
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-3 w-48" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <Card className="rounded-2xl border-stone-neutral-4 bg-white/95 backdrop-blur-xl shadow-lg overflow-hidden">
+      <CardHeader className="gap-4 px-6 sm:px-8 py-6 bg-stone-neutral-1/50 border-b border-stone-neutral-4">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <Skeleton className="h-8 w-3/4 max-w-md" />
+          <div className="flex items-center gap-3 shrink-0">
+            <Skeleton className="h-9 w-24 rounded-lg" />
+            <Skeleton className="h-9 w-24 rounded-lg" />
+          </div>
+        </div>
+        <Skeleton className="h-4 w-full max-w-2xl mt-2" />
+        <Skeleton className="h-4 w-5/6 max-w-xl mt-1" />
+      </CardHeader>
+
+      <CardContent className="flex flex-col gap-8 p-6 sm:p-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-2 p-4 bg-stone-neutral-2/40 rounded-xl border border-stone-neutral-4">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-6 w-28" />
+            </div>
+          ))}
+        </div>
+
+        <Separator className="bg-stone-neutral-4" />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-2 p-4 bg-stone-neutral-2/40 rounded-xl border border-stone-neutral-4">
+              <Skeleton className="h-4 w-24" />
+              <div className="flex items-center gap-3 mt-1">
+                <Skeleton className="size-9 rounded-full" />
+                <div className="space-y-1.5">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-40" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+);
+
 export const TaskDetailView = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -167,7 +227,7 @@ export const TaskDetailView = () => {
     onConfirm,
   } = useDeleteTask();
 
-  if (isLoading) return "Loading...";
+  if (isLoading) return <TaskDetailSkeleton />;
   if (error) return <ErrorState message={error} />;
   if (!task) return null;
 
