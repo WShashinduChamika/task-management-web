@@ -8,6 +8,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { isAdminUserStore } from "@/modules/auth/store/auth.store";
 import {
   Table,
   TableBody,
@@ -96,9 +97,9 @@ const formatDueDate = (date?: string) => {
   }
 };
 
-const EmptyRow = () => (
+const EmptyRow = ({ isAdmin }: { isAdmin: boolean }) => (
   <TableRow>
-    <TableCell colSpan={6} className="h-48 text-center">
+    <TableCell colSpan={isAdmin ? 8 : 6} className="h-48 text-center">
       <div className="flex flex-col items-center gap-2 text-muted-foreground">
         <span className="text-4xl">📋</span>
         <p className="text-sm font-medium">No tasks found</p>
@@ -172,6 +173,7 @@ export const TaskTableSection = ({
   useSignals();
 
   const { tasks, isLoading } = useTasks();
+  const isAdmin = isAdminUserStore.value;
 
   if (isLoading) {
     return (
@@ -191,12 +193,16 @@ export const TaskTableSection = ({
             <TableHead className="w-[100px]">Priority</TableHead>
             <TableHead className="w-[130px]">Status</TableHead>
             <TableHead className="w-[140px]">Due Date</TableHead>
+            {isAdmin && <TableHead className="w-[150px]">Created By</TableHead>}
+            {isAdmin && (
+              <TableHead className="w-[150px]">Assigned To</TableHead>
+            )}
             <TableHead className="w-[52px]" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {tasks?.length === 0 ? (
-            <EmptyRow />
+            <EmptyRow isAdmin={isAdmin} />
           ) : (
             tasks?.map((task) => (
               <TableRow key={task.id} className="group">
@@ -213,6 +219,20 @@ export const TaskTableSection = ({
                 <TableCell className="text-sm text-muted-foreground">
                   {formatDueDate(task.dueDate)}
                 </TableCell>
+                {isAdmin && (
+                  <TableCell className="text-sm text-muted-foreground">
+                    {task.createdBy
+                      ? `${task.createdBy.firstName} ${task.createdBy.lastName}`.trim()
+                      : "—"}
+                  </TableCell>
+                )}
+                {isAdmin && (
+                  <TableCell className="text-sm text-muted-foreground">
+                    {task.assignedTo
+                      ? `${task.assignedTo.firstName} ${task.assignedTo.lastName}`.trim()
+                      : "—"}
+                  </TableCell>
+                )}
                 <TableCell>
                   <RowActions
                     task={task}
