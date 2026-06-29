@@ -27,3 +27,9 @@ export const taskDetailErrorStore = signal<string | null>(null);
 export const taskUpdateFormPanelOpenStore = signal(false);
 export const taskUpdateFormLoadingStore = signal(false);
 export const taskUpdateErrorStore = signal<string | null>(null);
+
+export const taskDeleteDialogOpenStore = signal(false);
+export const taskDeleteLoadingStore = signal(false);
+export const taskDeleteErrorStore = signal<string | null>(null);
+export const taskToDeleteIdStore = signal<string | null>(null);
+

@@ -25,7 +25,9 @@ import { Button } from "../../../../components/ui/button";
 import { Separator } from "../../../../components/ui/separator";
 import { useTask } from "../../hooks/useTask";
 import { useUpdateTask } from "../../hooks/useUpdateTask";
+import { useDeleteTask } from "../../hooks/useDeleteTask";
 import { TaskFormPanelSection } from "../tasklist_view/sections/TaskFormPanelSection";
+import { TaskDeleteConfirmDialog } from "../shared/TaskDeleteConfirmDialog";
 import type { TaskPriority, TaskStatus } from "../../types";
 
 const priorityConfig: Record<
@@ -158,6 +160,14 @@ export const TaskDetailView = () => {
     onSubmit,
   } = useUpdateTask();
 
+  const {
+    isOpen: isDeleteOpen,
+    isLoading: isDeleting,
+    openDelete,
+    closeDelete,
+    onConfirm,
+  } = useDeleteTask();
+
   if (isLoading) return "Loading...";
   if (error) return <ErrorState message={error} />;
   if (!task) return null;
@@ -202,7 +212,7 @@ export const TaskDetailView = () => {
                 id="task-detail-delete-btn"
                 variant="destructive"
                 size="sm"
-                onClick={() => console.log("Delete task", task.id)}
+                onClick={() => openDelete(task.id)}
               >
                 <Trash2 className="mr-1.5 size-4" /> Delete
               </Button>
@@ -265,6 +275,15 @@ export const TaskDetailView = () => {
         onSubmit={onSubmit}
         onClose={closePanel}
         isLoading={isUpdating}
+      />
+
+      <TaskDeleteConfirmDialog
+        open={isDeleteOpen}
+        onOpenChange={(open) => !open && closeDelete()}
+        onConfirm={() =>
+          onConfirm(() => navigate("/dashboard/tasks/", { replace: true }))
+        }
+        isLoading={isDeleting}
       />
     </div>
   );

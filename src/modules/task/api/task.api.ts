@@ -36,4 +36,9 @@ export const updateTaskApi = async (id: string, payload: UpdateTaskDto) => {
   return unwrapApiResponse(response);
 };
 
+export const deleteTaskApi = async (id: string) => {
+  const response = await api.delete<ApiResponse<null>>(`/tasks/${id}`);
+  return unwrapApiResponse(response);
+};
+
 

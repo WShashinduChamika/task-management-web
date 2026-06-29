@@ -9,6 +9,7 @@ import {
   fetchTasksApi,
   fetchTaskByIdApi,
   updateTaskApi,
+  deleteTaskApi,
 } from "../api/task.api";
 import { getApiErrorMessage } from "../../../core/api/response";
 import {
@@ -28,6 +29,10 @@ import {
   taskUpdateFormPanelOpenStore,
   taskUpdateFormLoadingStore,
   taskUpdateErrorStore,
+  taskDeleteDialogOpenStore,
+  taskDeleteLoadingStore,
+  taskDeleteErrorStore,
+  taskToDeleteIdStore,
 } from "./task.store";
 import type { PaginationOptions } from "@/core/interfaces";
 
@@ -94,6 +99,17 @@ export const openTaskUpdateFormPanelAction = (): void => {
 
 export const closeTaskUpdateFormPanelAction = (): void => {
   taskUpdateFormPanelOpenStore.value = false;
+};
+
+export const openTaskDeleteDialogAction = (id: string): void => {
+  taskToDeleteIdStore.value = id;
+  taskDeleteDialogOpenStore.value = true;
+};
+
+export const closeTaskDeleteDialogAction = (): void => {
+  taskDeleteDialogOpenStore.value = false;
+  taskToDeleteIdStore.value = null;
+  taskDeleteErrorStore.value = null;
 };
 
 export const createTaskAction = async (
@@ -194,5 +210,34 @@ export const updateTaskAction = async (
     return false;
   } finally {
     taskUpdateFormLoadingStore.value = false;
+  }
+};
+
+export const deleteTaskAction = async (): Promise<boolean> => {
+  const id = taskToDeleteIdStore.value;
+  if (!id) return false;
+
+  taskDeleteLoadingStore.value = true;
+  taskDeleteErrorStore.value = null;
+
+  try {
+    await deleteTaskApi(id);
+
+    tasksDataStore.value = tasksDataStore.value.filter((t) => t.id !== id);
+
+    if (taskDetailStore.value?.id === id) {
+      taskDetailStore.value = null;
+    }
+
+    closeTaskDeleteDialogAction();
+    return true;
+  } catch (error: any) {
+    taskDeleteErrorStore.value = getApiErrorMessage(
+      error,
+      "Unable to delete task",
+    );
+    return false;
+  } finally {
+    taskDeleteLoadingStore.value = false;
   }
 };

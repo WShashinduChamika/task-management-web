@@ -8,17 +8,37 @@ import { useTasks } from "../../hooks/useTasks";
 import { useCreateTask } from "../../hooks/useCreateTask";
 import { useUpdateTask } from "../../hooks/useUpdateTask";
 import { useEffect } from "react";
+import { useDeleteTask } from "../../hooks/useDeleteTask";
+import { TaskDeleteConfirmDialog } from "../shared/TaskDeleteConfirmDialog";
+import { useNavigate } from "react-router-dom";
 
 export const TaskListView = () => {
   useSignals();
 
   const { loadTasks, filter, search, pagination } = useTasks();
 
-  const { form: createForm, isPanelOpen: isCreateOpen, isLoading: isCreating, openPanel: openCreate, closePanel: closeCreate, onSubmit: onCreateSubmit } =
-    useCreateTask();
+  const {
+    form: createForm,
+    isPanelOpen: isCreateOpen,
+    isLoading: isCreating,
+    openPanel: openCreate,
+    closePanel: closeCreate,
+    onSubmit: onCreateSubmit,
+  } = useCreateTask();
 
-  const { form: updateForm, isPanelOpen: isUpdateOpen, isLoading: isUpdating, openPanel: openUpdate, closePanel: closeUpdate, onSubmit: onUpdateSubmit } =
-    useUpdateTask();
+  const {
+    form: updateForm,
+    isPanelOpen: isUpdateOpen,
+    isLoading: isUpdating,
+    openPanel: openUpdate,
+    closePanel: closeUpdate,
+    onSubmit: onUpdateSubmit,
+  } = useUpdateTask();
+
+  const { isOpen, isLoading, openDelete, closeDelete, onConfirm } =
+    useDeleteTask();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadTasks();
@@ -49,7 +69,7 @@ export const TaskListView = () => {
 
       <TaskFilterSection />
 
-      <TaskTableSection onEdit={openUpdate} />
+      <TaskTableSection onEdit={openUpdate} onDelete={openDelete} />
 
       {/* Create panel */}
       <TaskFormPanelSection
@@ -69,6 +89,15 @@ export const TaskListView = () => {
         onSubmit={onUpdateSubmit}
         onClose={closeUpdate}
         isLoading={isUpdating}
+      />
+
+      <TaskDeleteConfirmDialog
+        open={isOpen}
+        onOpenChange={(open) => !open && closeDelete()}
+        onConfirm={() =>
+          onConfirm(() => navigate("/dashboard/tasks", { replace: true }))
+        }
+        isLoading={isLoading}
       />
     </div>
   );

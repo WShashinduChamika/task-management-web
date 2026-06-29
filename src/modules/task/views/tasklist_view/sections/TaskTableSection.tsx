@@ -1,6 +1,12 @@
 import { useSignals } from "@preact/signals-react/runtime";
 import { format } from "date-fns";
-import { CalendarDays, Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  CalendarDays,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -19,7 +25,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../../../../components/ui/dropdown-menu";
-import type { FetchTasksApiResponse, TaskPriority, TaskStatus } from "../../../types";
+import type {
+  FetchTasksApiResponse,
+  TaskPriority,
+  TaskStatus,
+} from "../../../types";
 import { useTasks } from "@/modules/task/hooks/useTasks";
 import { TaskPaginationSection } from "./TaskPaginationSection";
 
@@ -101,9 +111,11 @@ const EmptyRow = () => (
 const RowActions = ({
   task,
   onEdit,
+  onDelete,
 }: {
   task: FetchTasksApiResponse;
   onEdit: (task: FetchTasksApiResponse) => void;
+  onDelete: (id: string) => void;
 }) => {
   const navigate = useNavigate();
 
@@ -140,9 +152,7 @@ const RowActions = ({
         <DropdownMenuItem
           id={`task-delete-${task.id}`}
           variant="destructive"
-          onClick={() => {
-            console.log("Delete task");
-          }}
+          onClick={() => onDelete(task.id)}
         >
           <Trash2 className="mr-2 size-3.5" />
           Delete
@@ -154,8 +164,10 @@ const RowActions = ({
 
 export const TaskTableSection = ({
   onEdit,
+  onDelete,
 }: {
   onEdit: (task: FetchTasksApiResponse) => void;
+  onDelete: (id: string) => void;
 }) => {
   useSignals();
 
@@ -202,7 +214,11 @@ export const TaskTableSection = ({
                   {formatDueDate(task.dueDate)}
                 </TableCell>
                 <TableCell>
-                  <RowActions task={task} onEdit={onEdit} />
+                  <RowActions
+                    task={task}
+                    onEdit={onEdit}
+                    onDelete={() => onDelete(task.id)}
+                  />
                 </TableCell>
               </TableRow>
             ))
