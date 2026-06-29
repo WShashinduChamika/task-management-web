@@ -1,0 +1,35 @@
+import { signal } from "@preact/signals-react";
+import type { FetchTasksApiResponse, FetchTaskByIdApiResponse, TaskFilter } from "../types";
+import type { PaginatedResult, PaginationOptions } from "@/core/interfaces";
+
+export const tasksDataStore = signal<FetchTasksApiResponse[]>([]);
+export const tasksLoadingStore = signal(false);
+export const tasksErrorStore = signal<string | null>(null);
+export const taskFilterStore = signal<TaskFilter>({});
+export const taskSearchStore = signal("");
+export const taskPaginationStore = signal<PaginationOptions>({
+  page: 1,
+  limit: 10,
+  sortBy: "createdAt",
+  sortOrder: "desc",
+});
+
+export const taskPaginationMetaStore = signal<Omit<PaginatedResult<unknown>, "items"> | null>(null);
+
+export const taskCreateFormPanelOpenStore = signal(false);
+export const taskCreateFormLoadingStore = signal(false);
+export const taskCreateErrorStore = signal<string | null>(null);
+
+export const taskDetailStore = signal<FetchTaskByIdApiResponse | null>(null);
+export const taskDetailLoadingStore = signal(false);
+export const taskDetailErrorStore = signal<string | null>(null);
+
+export const taskUpdateFormPanelOpenStore = signal(false);
+export const taskUpdateFormLoadingStore = signal(false);
+export const taskUpdateErrorStore = signal<string | null>(null);
+
+export const taskDeleteDialogOpenStore = signal(false);
+export const taskDeleteLoadingStore = signal(false);
+export const taskDeleteErrorStore = signal<string | null>(null);
+export const taskToDeleteIdStore = signal<string | null>(null);
+
