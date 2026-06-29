@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import type { ApiErrorBody, ApiResponse } from "./types";
+import type { ApiErrorBody, ApiResponse, ApiSuccess } from "./types";
 import axios from "axios";
 
 export class ApiRequestError extends Error {
@@ -19,9 +19,11 @@ export const unwrapApiResponse = <T>(
 ): T => {
   const body = response.data;
 
-  if (body.success) {
-    return body.data;
+  if (!body.success) {
+    throw new ApiRequestError((body as ApiErrorBody).error);
   }
+
+  return (body as ApiSuccess<T>).data;
 };
 
 export const getApiErrorMessage = (err: unknown, fallback: string): string => {

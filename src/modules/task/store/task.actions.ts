@@ -44,10 +44,10 @@ const buildListTaskParams = (): ListTaskParams => {
     sortBy: sortBy as ListTaskParams["sortBy"],
     sortOrder: sortOrder as ListTaskParams["sortOrder"],
     search: taskSearchStore.value,
-    priority: taskFilterStore.value.priority,
-    status: taskFilterStore.value.status,
-    createdBy: taskFilterStore.value.createdBy,
-    assignedTo: taskFilterStore.value.assignedTo,
+    priority: taskFilterStore.value.priority!,
+    status: taskFilterStore.value.status!,
+    createdBy: taskFilterStore.value.createdBy!,
+    assignedTo: taskFilterStore.value.assignedTo!,
   };
 };
 
@@ -69,8 +69,8 @@ export const setTaskPaginationAction = (
 
 export const resetTaskFilterAction = (): void => {
   taskFilterStore.value = {
-    priority: null,
-    status: null,
+    priority: undefined,
+    status: undefined,
     createdBy: undefined,
     assignedTo: undefined,
   };
